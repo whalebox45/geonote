@@ -1,0 +1,37 @@
+### 🔐 建立測試用戶
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "nickname": "測試用戶A",
+  "bio": "這是第一個測試帳戶",
+  "avatarUrl": "",
+  "roles": ["user"],
+  "isTestAccount": true
+}
+
+###
+
+### 📋 取得所有用戶
+GET http://localhost:3000/api/users
+
+###
+
+### 🔍 查詢單一用戶（請用上一步的 uuid）
+GET http://localhost:3000/api/users/你的uuid
+
+###
+
+### ✏️ 編輯用戶
+PATCH http://localhost:3000/api/users/你的uuid
+Content-Type: application/json
+
+{
+  "nickname": "新暱稱",
+  "bio": "我改了一下簡介"
+}
+
+###
+
+### 🗑️ 刪除用戶
+DELETE http://localhost:3000/api/users/你的uuid

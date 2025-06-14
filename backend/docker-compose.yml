@@ -1,0 +1,27 @@
+# backend/docker-compose.yml
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo
+    container_name: geonote_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build: .
+    container_name: geonote_backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app           # bind mount: 主機檔案映射到容器
+      - /app/node_modules
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/geonote
+    depends_on:
+      - mongo
+
+volumes:
+  mongo_data:

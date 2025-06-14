@@ -3,6 +3,8 @@ const express = require('express');
 const router = express.Router();
 const Memory = require('../models/memory');
 
+const devTokenAuth = require('../middleware/devTokenAuth');
+
 // GET all
 router.get('/', async (req, res) => {
   const memories = await Memory.find().sort({ occurredAt: -1 });
@@ -10,7 +12,7 @@ router.get('/', async (req, res) => {
 });
 
 // POST new
-router.post('/', async (req, res) => {
+router.post('/', devTokenAuth, async (req, res) => {
   const memory = new Memory(req.body);
   await memory.save();
   res.status(201).json(memory);
