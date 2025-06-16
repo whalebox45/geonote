@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const Memory = require('../models/memory');
 
-const devTokenAuth = require('../middleware/devTokenAuth');
+const devTokenAuth = require('../middleware/auth');
 
 // GET all
 router.get('/', async (req, res) => {

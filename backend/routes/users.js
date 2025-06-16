@@ -1,7 +1,7 @@
 // routes/users.js
 const express = require('express');
 const router = express.Router();
-const UserProfile = require('../models/UserProfile');
+const UserProfile = require('../models/user_profile');
 
 // 建立用戶
 router.post('/', async (req, res) => {

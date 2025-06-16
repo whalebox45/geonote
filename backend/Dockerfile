@@ -1,5 +1,5 @@
 # backend/Dockerfile
-FROM node:18
+FROM node:22
 
 # 設定工作目錄
 WORKDIR /app
@@ -15,4 +15,4 @@ EXPOSE 3000
 
 # 使用 nodemon 方便開發（建議全域裝）
 RUN npm install -g nodemon
-CMD ["nodemon", "index.js"]
+CMD ["nodemon","--legacy-watch", "index.js"]

@@ -18,12 +18,12 @@ GET http://localhost:3000/api/users
 ###
 
 ### 🔍 查詢單一用戶（請用上一步的 uuid）
-GET http://localhost:3000/api/users/你的uuid
+GET http://localhost:3000/api/users/31729ed2-46c6-4531-9545-9384be0eb7bb
 
 ###
 
 ### ✏️ 編輯用戶
-PATCH http://localhost:3000/api/users/你的uuid
+PATCH http://localhost:3000/api/users/31729ed2-46c6-4531-9545-9384be0eb7bb
 Content-Type: application/json
 
 {

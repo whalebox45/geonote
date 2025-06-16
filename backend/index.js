@@ -26,6 +26,10 @@ app.use('/api/upload', require('./routes/upload'));
 app.use('/api/memories', require('./routes/memories'));
 app.use('/api/users', require('./routes/users'));
 
+app.get('/', (req, res) => {
+  res.send('Server is running and healthy!');
+});
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
