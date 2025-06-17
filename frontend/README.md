@@ -1,5 +1,24 @@
-# Vue 3 + TypeScript + Vite
+# GeoNote Frontend
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+GeoNote 是一款以 **記憶地點與感受記錄** 為主題的前端專案，採用手機優先設計，使用 Vue 3 + Vite + TypeScript 建構，搭配 Sass 與 OpenStreetMap。
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+目前階段：**純前端樣式建置，尚無功能，著重於畫面與結構清晰。**
+
+---
+
+## 🚀 技術架構
+
+- **Vue 3 + Vite + TypeScript**
+- **vue-router**：頁面切換
+- **Sass / SCSS**：可變數管理樣式
+- **Font Awesome**：圖示
+- **vue3-openlayers**：顯示 OSM 地圖
+- **手機優先設計**：320×568 起跳
+
+---
+
+## 📦 安裝與啟動
+
+```bash
+npm install
+npm run dev
