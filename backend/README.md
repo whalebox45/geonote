@@ -14,7 +14,7 @@ Multer 圖片上傳（本地端儲存）
 
 UUID 記憶 ID
 
-Dev Token 模擬登入（可選）
+JWT 登入認證（含 Dev Token 模擬登入）
 
 Docker / docker-compose 一鍵啟動
 
@@ -29,6 +29,7 @@ cd geonote/backend
 
 # backend/.env
 MONGO_URI=mongodb://localhost:27017/geonote
+JWT_SECRET=your_super_secret_key
 
 若使用 Docker Compose，會自動使用 mongodb://mongo:27017/geonote
 
@@ -64,20 +65,36 @@ MongoDB → 透過 GUI 工具（如 Compass）連線 localhost:27017
 
 記憶 CRUD（含圖片上傳）
 
+登入註冊（JWT）驗證與權限保護
+
 Dev Token 模擬身分驗證（可選）
+
+🔐 登入與認證機制
+
+GeoNote 採用 JWT 認證：
+
+註冊：POST /api/auth/register，傳入 email / password / nickname
+
+登入：POST /api/auth/login，成功後回傳 JWT token
+
+權限保護：在需要登入的 API 加入 header：
+
+Authorization: Bearer <你的 token>
+
+預設有效期限為 7 天，token 會攜帶 userId 與 provider 資訊。
 
 📁 專案結構
 
 backend/
 ├── models/           # Mongoose 資料模型
-├── routes/           # API 路由：users, memories, upload
-├── middleware/       # Dev token 模擬登入
+├── routes/           # API 路由：auth, users, memories, upload
+├── middleware/       # JWT / Dev token 驗證
 ├── uploads/          # 上傳圖片暫存
 ├── tests/            # REST Client 測試檔
 ├── index.js          # 主伺服器
 ├── Dockerfile        # Express 容器建置
 ├── docker-compose.yml
-├── .env              # MongoDB URI
+├── .env              # MongoDB URI, JWT_SECRET
 └── .dockerignore
 
 🧐 Dev Token 模擬登入（可選）
@@ -87,6 +104,8 @@ backend/
 Authorization: Bearer devtoken123
 
 即可繞過登入驗證，作為測試帳戶傳入 req.user = { uuid: 'test-user-uuid' }。
+
+
 
 ✅ 進度狀態
 - 使用者與記憶 CRUD

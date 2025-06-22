@@ -5,7 +5,9 @@
 
       <div class="map-placeholder">
         <!-- <p>Map Here</p> -->
-        <MapView />
+        <!-- <MapView /> -->
+        <MapView :lat="25.0339" :lon="121.5645" :enableClick="false" />
+
       </div>
 
 
@@ -17,7 +19,7 @@
         <div class="memory-card">Another<br /><span class="time">Just now</span></div>
       </div>
     </div>
-    
+
     <div style="height: 50px;"></div>
 
     <TabBar />
@@ -72,6 +74,7 @@ import MapView from '../components/MapView.vue';
   grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
 }
+
 .memory-card {
   background-color: var(--color-accent);
   padding: 0.8rem;
@@ -85,7 +88,7 @@ import MapView from '../components/MapView.vue';
   justify-content: flex-start; // 🟢 上對齊
 }
 
-.memory-card > *:not(:last-child) {
+.memory-card>*:not(:last-child) {
   margin-bottom: 0.25rem;
 }
 
@@ -93,5 +96,4 @@ import MapView from '../components/MapView.vue';
   font-size: 0.75rem;
   color: #666;
 }
-
 </style>

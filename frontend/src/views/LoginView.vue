@@ -6,12 +6,18 @@
             </div>
 
             <div class="form">
-                <input type="text" placeholder="Username" class="input" />
-                <input type="password" placeholder="Passphrase" class="input" />
+                <input type="text" placeholder="Username" class="input" v-model="username"/>
+                <input type="password" placeholder="Passphrase" class="input" v-model="password"/>
             </div>
 
             <div class="btn-group">
-                <button class="login-button" @click="goToStory">
+
+                <button class="register-button" @click="goToRegister">
+                    <i class="fas fa-user-plus"></i>
+                    Sign Up
+                </button>
+
+                <button class="login-button" @click="login">
                     <i class="fas fa-sign-in-alt"></i>
                     Login
                 </button>
@@ -21,12 +27,53 @@
 </template>
 
 <script setup lang="ts">
+import axios from 'axios';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 const router = useRouter();
+
+const API_URL = import.meta.env.VITE_API_URL;
+
+const username = ref('');
+const password = ref('');
+
+
+const login = async () => {
+    try {
+        const res = await axios.post(`${API_URL}/auth/login`, {
+            email: username.value, // 替換為實際的用戶名
+            password:  password.value // 替換為實際的密碼
+        });
+
+        if (res.status === 200) {
+            // 登入成功，處理登入邏輯
+            console.log('Login successful:', res.data);
+            // 可以在這裡儲存 token 或其他用戶資料
+            router.push('/story'); // 登入成功後跳轉到故事頁面
+        } else {
+            console.error('Login failed:', res.data);
+        }
+    } catch (err: any) {
+        console.error('Login error:', err);
+        if (err.response && err.response.status === 401) {
+            // 處理未授權錯誤
+            console.error('Invalid username or password. Please try again.');
+        } else {
+            // 處理其他錯誤
+            console.error('An error occurred while logging in. Please try again later.');
+        }
+    }
+}
 
 function goToStory() {
     router.push('/story');
 }
+
+function goToRegister() {
+    router.push('/register');
+}
+
+
 </script>
 
 <style scoped lang="scss">
@@ -52,7 +99,7 @@ function goToStory() {
     width: 100%;
 
     h1 {
-        font-size: 2rem;
+        font-size: 3rem;
         color: var(--color-text);
     }
 }
@@ -69,6 +116,18 @@ function goToStory() {
     display: flex;
     justify-content: flex-end;
     margin-top: 1rem;
+    gap: 0.5rem;
+    
+    button {
+        border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Source Serif Pro', serif;
+    }
+
+    button:hover {
+        opacity: 0.9;
+    }
 }
 
 .login-button {
@@ -76,19 +135,35 @@ function goToStory() {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.3rem;
     padding: 0.5rem;
     font-size: 1rem;
     background-color: var(--color-primary);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: 'Source Serif Pro', serif;
+    color: var(--color-accent);
+    gap: 0.3rem;
 }
 
-.login-button:hover {
-    opacity: 0.9;
+.backtologin-button {
+    width: 45%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    font-size: 1rem;
+    background-color: var(--color-accent);
+    color: var(--color-primary);
+    gap: 0.3rem;
+}
+
+.register-button {
+    width: 33.3333%; // 約 1/3
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    font-size: 1rem;
+    background-color: var(--color-accent);
+    color: var(--color-primary);
+    gap: 0.3rem;
 }
 
 .input {

@@ -1,3 +1,46 @@
+
+### 📝 註冊
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "user1@example.com",
+  "password": "abc123",
+  "nickname": "小記憶"
+}
+
+###
+
+### 🔐 登入取得 token
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "user1@example.com",
+  "password": "abc123"
+}
+
+###
+
+### 🔒 測試 token 權限（假設用於建立記憶）
+POST http://localhost:3000/api/memories
+Authorization: Bearer token
+Content-Type: application/json
+
+{
+  "title": "測試用 token",
+  "description": "JWT 建立記憶測試",
+  "mood": "平靜",
+  "intensity": 3,
+  "occurredAt": "2025-01-01T00:00:00Z",
+  "location": {
+    "lat": 25.04,
+    "lng": 121.56
+  },
+  "imageUrl": "/uploads/none.jpg"
+}
+
+
 ### 🔐 建立測試用戶
 POST http://localhost:3000/api/users
 Content-Type: application/json

@@ -26,6 +26,8 @@ app.use('/api/upload', require('./routes/upload'));
 app.use('/api/memories', require('./routes/memories'));
 app.use('/api/users', require('./routes/users'));
 
+app.use('/api/auth', require('./routes/auth'));
+
 app.get('/', (req, res) => {
   res.send('Server is running and healthy!');
 });

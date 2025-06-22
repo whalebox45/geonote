@@ -9,7 +9,7 @@
     <button @click="go('/chat')" :class="{ active: isActive('/chat') }">
       <i class="fas fa-comments"></i>
     </button>
-    <button>
+    <button @click="go('/')">
       <i class="fas fa-cog"></i>
     </button>
   </nav>
@@ -36,7 +36,7 @@ const isActive = (path: string) => route.path === path;
   bottom: 0;
   width: 100%;
   height: 3.2rem;
-  background-color: var(--color-accent);
+  background-color: var(--color-primary);
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -47,11 +47,11 @@ button {
   background: none;
   border: none;
   font-size: 1.2rem;
-  color: var(--color-primary);
+  color: var(--color-bg);
   cursor: pointer;
 }
 
 button.active {
-  color: var(--color-text);
+  color: var(--color-accent);
 }
 </style>
