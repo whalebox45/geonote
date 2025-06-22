@@ -8,7 +8,7 @@ const MemorySchema = new mongoose.Schema({
         unique: true,
         default: uuidv4
     },
-    userUuid: {
+    userId: {
         type: String,
         required: true
     },
