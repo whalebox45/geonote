@@ -23,5 +23,18 @@ services:
     depends_on:
       - mongo
 
+  
+  test: # 測試專用容器
+    build: .
+    container_name: geonote_test
+    command: npm test
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/geonote
+    depends_on:
+      - mongo
+
 volumes:
   mongo_data:

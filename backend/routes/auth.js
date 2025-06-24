@@ -20,11 +20,9 @@ router.post("/register", async (req, res) => {
         return res.status(409).json({ error: "Email already registered" });
       }
   
-      // 建立 user profile
       const user = await User.create({ nickname, bio });
-  
-      // 建立帳號（userId 連到 ObjectId，而非 uuid）
       const passwordHash = await bcrypt.hash(password, 10);
+
       const account = await Account.create({
         userId: user._id,
         email,
@@ -33,7 +31,7 @@ router.post("/register", async (req, res) => {
   
       // 自動登入：產生 token
       const token = jwt.sign(
-        { userId: account.userId, provider: account.provider },
+        { userUuid: user.uuid, provider: account.provider },
         process.env.JWT_SECRET,
         { expiresIn: "7d" }
       );
@@ -48,16 +46,19 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
-    console.log("Login attempt:", { email, password });
-
     const account = await Account.findOne({ email });
     if (!account) return res.status(401).json({ error: "Invalid credentials" });
 
     const isMatch = await bcrypt.compare(password, account.passwordHash);
     if (!isMatch) return res.status(401).json({ error: "Invalid credentials" });
 
+    const user = await User.findById(account.userId);
+    if (!user) return res.status(404).json({ error: "User not found"});
+
+
+
     const token = jwt.sign(
-        { userId: account.userId, provider: account.provider },
+        { userUuid: user.uuid, provider: account.provider },
         process.env.JWT_SECRET,
         { expiresIn: "7d" }
     );

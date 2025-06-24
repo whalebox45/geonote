@@ -15,4 +15,4 @@ EXPOSE 3000
 
 # 使用 nodemon 方便開發（建議全域裝）
 RUN npm install -g nodemon
-CMD ["nodemon","--legacy-watch", "index.js"]
+CMD ["nodemon","--legacy-watch", "server.js"]

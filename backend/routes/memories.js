@@ -1,88 +1,69 @@
-// routes/memories.js
 const express = require('express');
 const router = express.Router();
 const Memory = require('../models/memory');
-
 const TokenAuth = require('../middleware/auth');
 
-const PAGE_LIMIT = 10; // Default limit for pagination (no magic number)
+const PAGE_LIMIT = 10;
 
-// GET all
-// router.get('/', async (req, res) => {
-//   const memories = await Memory.find().sort({ occurredAt: -1 });
-//   res.json(memories);
-// });
-
-
-// GET by userId with pagination (default: 10 per page)
-router.get('/user/:userId',  async (req, res) => {
-  const pageoffset = parseInt(req.query.page) || 0; // Default to page 0
-  const limit = PAGE_LIMIT; // Default limit per page
+// GET memories by userUuid
+router.get('/user/:userUuid', async (req, res) => {
+  const pageoffset = parseInt(req.query.page) || 0;
+  const limit = PAGE_LIMIT;
   const skip = pageoffset * limit;
 
-  const memories = await Memory.find({ userId: req.params.userId })
+  const memories = await Memory.find({ userUuid: req.params.userUuid })
     .sort({ occurredAt: -1 })
     .skip(skip)
     .limit(limit);
 
-  const totalCount = await Memory.countDocuments({ userId: req.params.userId });
+  const totalCount = await Memory.countDocuments({ userUuid: req.params.userUuid });
   const totalPages = Math.ceil(totalCount / limit);
 
   res.json({
     memories,
-    page,
+    page: pageoffset,
     totalPages,
     totalCount,
   });
 });
 
-// POST new
+// POST new memory
 router.post('/', TokenAuth, async (req, res) => {
+  const { title, description, mood, intensity, occurredAt, imageUrl, location } = req.body;
+  console.debug(req.userUuid)
+  try {
+    const memory = new Memory({
+      title,
+      description,
+      mood,
+      intensity,
+      occurredAt,
+      imageUrl,
+      location,
+      userUuid: req.userUuid,
+    });
 
+    await memory.save();
+    res.status(201).json(memory);
+  } catch (err) {
+    console.error('Error creating memory:', err);
+    res.status(500).json({ error: 'Failed to create memory' });
+  }
+});
 
-  const { title, description, mood, intensity, occurredAt, imageUrl, location, userId } = req.body;
-
-    // 檢查 token 中的 userId 是否與傳入的 userId 相符
-    if (req.userId !== userId) {
-      return res.status(401).json({ error: "Unauthorized: userId does not match token" });
-    }
-  
-
-
-    try {
-      const memory = new Memory({
-        title,
-        description,
-        mood,
-        intensity,
-        occurredAt,
-        imageUrl,
-        location,
-        userId
-      });
-  
-      await memory.save();
-      res.status(201).json(memory);
-    } catch (err) {
-      res.status(500).json({ error: "Failed to create memory" });
-    }
-  });
-
-// GET by uuid
+// GET memory by uuid
 router.get('/:uuid', async (req, res) => {
   const memory = await Memory.findOne({ uuid: req.params.uuid });
   if (!memory) return res.status(404).json({ error: 'Not found' });
   res.json(memory);
 });
 
-// PUT by uuid（僅允許原 user 編輯）
+// PUT memory (only self)
 router.put('/:uuid', TokenAuth, async (req, res) => {
   const memory = await Memory.findOne({ uuid: req.params.uuid });
-
   if (!memory) return res.status(404).json({ error: 'Not found' });
 
-  // 檢查是否為該使用者
-  if (memory.userId.toString() !== req.userId) {
+  if (memory.userUuid !== req.userUuid) {
     return res.status(401).json({ error: 'Unauthorized: cannot edit others\' memory' });
   }
 
@@ -91,14 +72,12 @@ router.put('/:uuid', TokenAuth, async (req, res) => {
   res.json(memory);
 });
 
-// DELETE by uuid（僅允許原 user 刪除）
+// DELETE memory (only self)
 router.delete('/:uuid', TokenAuth, async (req, res) => {
   const memory = await Memory.findOne({ uuid: req.params.uuid });
-
   if (!memory) return res.status(404).json({ error: 'Not found' });
 
-  // 檢查是否為該使用者
-  if (memory.userId.toString() !== req.userId) {
+  if (memory.userUuid !== req.userUuid) {
     return res.status(401).json({ error: 'Unauthorized: cannot delete others\' memory' });
   }
 
