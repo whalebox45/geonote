@@ -98,10 +98,6 @@ const goHome = () => {
   align-items: center;
 }
 
-.section-title {
-  font-size: 1.5rem;
-  color: var(--color-primary);
-}
 
 .home-icon {
   font-size: 1.3rem;

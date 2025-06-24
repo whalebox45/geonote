@@ -4,8 +4,6 @@
       <h2 class="section-title">Story</h2>
 
       <div class="map-placeholder">
-        <!-- <p>Map Here</p> -->
-        <!-- <MapView /> -->
         <MapView :lat="25.0339" :lon="121.5645" :enableClick="false" />
 
       </div>
@@ -46,11 +44,6 @@ import MapView from '../components/MapView.vue';
   flex: 1;
 }
 
-.section-title {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  color: var(--color-primary);
-}
 
 .map-placeholder {
   height: 70vh;

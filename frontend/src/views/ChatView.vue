@@ -44,8 +44,6 @@ import TabBar from '../components/TabBar.vue';
 }
 
 .section-title {
-    font-size: 1.5rem;
-    color: var(--color-primary);
     margin-bottom: 1rem;
 }
 

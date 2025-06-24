@@ -25,4 +25,17 @@ html, body {
   --color-primary: #557777;
   --color-accent: #eeeedd;
   --color-text: #111111;
+  --color-disabled-bg: #888888;
+  --color-disabled: #aaaaaa;
+  --color-danger: #ff4444;
+  --color-warning: #ffbb33;
+  --color-info: #33b5e5;
+  --color-success: #00c851;
+  --color-purple: #aa66cc;
+}
+
+.section-title {
+  font-size: 32pt;
+  color: var(--color-text);
+  margin-bottom: 1rem;
 }
