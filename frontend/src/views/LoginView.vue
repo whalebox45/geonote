@@ -52,7 +52,7 @@ const login = async () => {
             // 可以在這裡儲存 token 或其他用戶資料
             localStorage.setItem('token', res.data.token); // 假設 API 返回 token
 
-            router.push('/story'); // 登入成功後跳轉到故事頁面
+            router.push('/home'); // 登入成功後跳轉到故事頁面
         } else {
             console.error('Login failed:', res.data);
         }
@@ -68,8 +68,8 @@ const login = async () => {
     }
 }
 
-function goToStory() {
-    router.push('/story');
+function goToHome() {
+    router.push('/home');
 }
 
 function goToRegister() {

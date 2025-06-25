@@ -42,7 +42,7 @@ src/
 │   └── MapView.vue          # OpenStreetMap 組件
 └── views/
     ├── LoginView.vue        # 登入畫面
-    ├── StoryView.vue        # 地圖 + 記憶卡片
+    ├── HomeView.vue        # 地圖 + 記憶卡片
     ├── NoteView.vue         # 記憶建立
     └── ChatView.vue         # 聊天畫面
 ```
@@ -76,7 +76,7 @@ src/
 | 路徑        | 頁面       | 說明                           |
 |-------------|------------|--------------------------------|
 | `/`         | Login      | 輸入帳密，點擊進入主頁         |
-| `/story`    | Story      | 顯示地圖 + 記憶卡片（雙欄）    |
+| `/home `    | Home       | 顯示地圖 + 記憶卡片（雙欄）    |
 | `/note`     | Note       | 建立記憶，包含 mood、時間、描述、圖片 |
 | `/chat`     | Chat       | 對話式介面，輸入訊息無功能     |
 

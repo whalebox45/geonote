@@ -13,6 +13,7 @@ const MemorySchema = new mongoose.Schema({
   intensity: Number,           // 1-5
   occurredAt: Date,
   imageUrl: String,
+  locationName: String,         // ex: "台北市"
   location: {
     lat: Number,
     lng: Number,

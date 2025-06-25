@@ -63,7 +63,7 @@ const register = async () => {
 
     localStorage.setItem('token', res.data.token)
     successMessage.value = '註冊成功！'
-    router.push('/story')
+    router.push('/home')
   } catch (err: any) {
     errorMessage.value = err.response?.data?.error || 'Registration failed.'
   }

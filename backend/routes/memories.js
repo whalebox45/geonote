@@ -5,18 +5,19 @@ const TokenAuth = require('../middleware/auth');
 
 const PAGE_LIMIT = 10;
 
-// GET memories by userUuid
-router.get('/user/:userUuid', async (req, res) => {
+// GET memories by token's corresponding userUuid
+router.get('/me', TokenAuth, async (req, res) => {
+
   const pageoffset = parseInt(req.query.page) || 0;
   const limit = PAGE_LIMIT;
   const skip = pageoffset * limit;
 
-  const memories = await Memory.find({ userUuid: req.params.userUuid })
-    .sort({ occurredAt: -1 })
+  const memories = await Memory.find({ userUuid: req.userUuid })
+    .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit);
 
-  const totalCount = await Memory.countDocuments({ userUuid: req.params.userUuid });
+  const totalCount = await Memory.countDocuments({ userUuid: req.userUuid });
   const totalPages = Math.ceil(totalCount / limit);
 
   res.json({
@@ -29,9 +30,22 @@ router.get('/user/:userUuid', async (req, res) => {
 
 // POST new memory
 router.post('/', TokenAuth, async (req, res) => {
-  const { title, description, mood, intensity, occurredAt, imageUrl, location } = req.body;
-  console.debug(req.userUuid)
+  const {
+    title,
+    description,
+    mood,
+    intensity,
+    occurredAt, // 改為前後端統一名稱
+    imageUrl,
+    location,
+    locationName
+  } = req.body;
+
+  if (!title || !description || !occurredAt) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
   try {
+
     const memory = new Memory({
       title,
       description,
@@ -40,6 +54,7 @@ router.post('/', TokenAuth, async (req, res) => {
       occurredAt,
       imageUrl,
       location,
+      locationName,
       userUuid: req.userUuid,
     });
 

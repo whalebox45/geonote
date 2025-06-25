@@ -1,61 +1,82 @@
 <template>
-    <ol-map
-      ref="mapRef"
-      class="map"
-      :loadTilesWhileAnimating="true"
-      :loadTilesWhileInteracting="true"
-      @mounted="onMapMounted"
-    >
-      <ol-view
-        ref="viewRef"
-        :center="[props.lon, props.lat]"
-        :zoom="13"
-        :projection="'EPSG:4326'"
-      />
-  
-      <ol-tile-layer>
-        <ol-source-osm />
-      </ol-tile-layer>
-  
-      <ol-vector-layer>
-        <ol-source-vector>
-          <ol-feature>
-            <ol-geom-point :coordinates="[props.lon, props.lat]" />
-          </ol-feature>
-        </ol-source-vector>
-      </ol-vector-layer>
-    </ol-map>
-  </template>
-  
-  <script setup lang="ts">
-  import { ref, watch } from 'vue';
-  
-  const props = defineProps<{
-    lat: number;
-    lon: number;
-  }>();
-  
+  <div class="map-view" :id="mapId"></div>
+</template>
 
-  const mapRef = ref<any>(null);
-  const viewRef = ref<any>(null);
-  
-  function onMapMounted() {
-    const map = mapRef.value?.mapObject;
+<script setup lang="ts">
+import { onMounted, watch, ref } from 'vue';
+import L from 'leaflet';
+
+type MarkerData = {
+  title: string;
+  location: {
+    lat: number;
+    lng: number;
+  };
+};
+
+const props = defineProps<{
+  lat: number;
+  lon: number;
+  enableClick: boolean;
+  markers?: MarkerData[];
+}>();
+
+const mapId = `map-${Math.random().toString(36).slice(2)}`;
+let map: L.Map;
+let markerGroup: L.LayerGroup;
+
+const initializeMap = () => {
+  map = L.map(mapId).setView([props.lat, props.lon], 13);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors',
+    maxZoom: 18,
+  }).addTo(map);
+
+  markerGroup = L.layerGroup().addTo(map);
+
+  if (props.enableClick) {
+    map.on('click', (e: L.LeafletMouseEvent) => {
+      console.log('Clicked at:', e.latlng);
+    });
   }
-  
-  watch(() => [props.lat, props.lon], ([newLat, newLon]) => {
-    if (viewRef.value?.setCenter) {
-      viewRef.value.setCenter([newLon, newLat]);
-    }
+
+  if (props.markers && props.markers.length > 0) {
+    updateMarkers(props.markers);
+  }
+};
+
+const updateMarkers = (markers: MarkerData[]) => {
+  markerGroup.clearLayers();
+
+  markers.forEach(mem => {
+    if (!mem.location) return;
+    const marker = L.marker([mem.location.lat, mem.location.lng])
+      .bindPopup(mem.title);
+    markerGroup.addLayer(marker);
   });
-  </script>
-  
-  <style scoped>
-  .map {
-    width: 100%;
-    height: 100%;
-    border-radius: 8px;
-    overflow: hidden;
+
+  // 自動聚焦範圍
+  const bounds = L.latLngBounds(markers.map(m => [m.location.lat, m.location.lng]));
+  map.fitBounds(bounds, { padding: [20, 20] });
+};
+
+onMounted(() => {
+  initializeMap();
+});
+
+watch(() => props.markers, (newMarkers) => {
+  if (map && newMarkers && newMarkers.length > 0) {
+    updateMarkers(newMarkers);
   }
-  </style>
-  
+}, { deep: true });
+</script>
+
+<style scoped>
+.map-view {
+  width: 100%;
+  height: 70vh;
+  border-radius: 8px;
+  overflow: hidden;
+}
+</style>

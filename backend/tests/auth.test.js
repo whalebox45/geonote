@@ -1,12 +1,12 @@
-const request = require('supertest');
-const app = require('../index'); // 假設你的 Express app 是在這個檔案 export 出來的
-const mongoose = require('mongoose');
+const request = require("supertest");
+const app = require("../index");
+const mongoose = require("mongoose");
 
-describe('Auth API', () => {
+describe("Auth API", () => {
   let server;
 
   beforeAll(() => {
-    server = app.listen(4001); // 避免衝突，開不同 port
+    server = app.listen(4001);
   });
 
   afterAll(async () => {
@@ -14,30 +14,27 @@ describe('Auth API', () => {
     server.close();
   });
 
-  test('Register new user and return token', async () => {
-    const res = await request(server)
-      .post('/api/auth/register')
-      .send({
-        email: 'testuser@example.com',
-        password: 'test1234',
-        nickname: '測試用戶',
-        bio: '我是用來測試的'
-      });
+  test("註冊使用者", async () => {
+    const res = await request(server).post("/api/auth/register").send({
+      email: "newuser@example.com",
+      password: "test1234",
+      nickname: "新測試者",
+      bio: "這是測試帳號",
+    });
 
     expect(res.statusCode).toBe(201);
-    expect(res.body).toHaveProperty('token');
-    expect(res.body).toHaveProperty('userId');
+    expect(res.body.message).toBe("User registered");
   });
 
-  test('Login with valid credentials', async () => {
-    const res = await request(server)
-      .post('/api/auth/login')
-      .send({
-        email: 'testuser@example.com',
-        password: 'test1234'
-      });
+  test("登入取得 token", async () => {
+    const res = await request(server).post("/api/auth/login").send({
+      email: "newuser@example.com",
+      password: "test1234",
+    });
 
     expect(res.statusCode).toBe(200);
-    expect(res.body).toHaveProperty('token');
+    expect(res.body).toHaveProperty("token");
+    expect(res.body).toHaveProperty("userId");
   });
 });
+a

@@ -224,9 +224,16 @@ async function searchLocation() {
     const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationQuery.value)}`);
     const data = await response.json();
 
+    console.debug(data)
+
     if (data.length > 0) {
       const lat = parseFloat(data[0].lat);
-      const lng = parseFloat(data[0].lng);
+      const lng = parseFloat(data[0].lon);
+
+      if (isNaN(lat) || isNaN(lng)) {
+        throw new Error("Invalid coordinates from geocoding");
+      }
+
       mapLat.value = lat;
       mapLng.value = lng;
     } else {
@@ -329,7 +336,7 @@ async function saveNote() {
     showDialog.value = true;
 
     setTimeout(() => {
-      router.push('/story');
+      router.push('/home');
     }, 1500);
 
 
