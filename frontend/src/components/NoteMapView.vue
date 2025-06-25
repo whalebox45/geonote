@@ -9,12 +9,12 @@ import 'leaflet/dist/leaflet.css';
 
 const props = defineProps<{
   lat: number;
-  lon: number;
+  lng: number;
   enableClick?: boolean;
 }>();
 
 const emit = defineEmits<{
-  (e: 'mapClick', payload: { lat: number; lon: number }): void;
+  (e: 'mapClick', payload: { lat: number; lng: number }): void;
 }>();
 
 let map: L.Map;
@@ -22,7 +22,7 @@ let marker: L.Marker;
 
 onMounted(() => {
   // 初始化地圖
-  map = L.map('map', { attributionControl: false }).setView([props.lat, props.lon], 13);
+  map = L.map('map', { attributionControl: false }).setView([props.lat, props.lng], 13);
 
   // 圖磚層
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -31,23 +31,23 @@ onMounted(() => {
   }).addTo(map);
 
   // 初始 marker
-  marker = L.marker([props.lat, props.lon]).addTo(map);
+  marker = L.marker([props.lat, props.lng]).addTo(map);
 
   // 點擊事件
   if (props.enableClick) {
     map.on('click', (e: L.LeafletMouseEvent) => {
       const { lat, lng } = e.latlng;
       marker.setLatLng([lat, lng]); // 更新 marker
-      emit('mapClick', { lat, lon: lng }); // 傳給父層
+      emit('mapClick', { lat, lng }); // 傳給父層
     });
   }
 });
 
 // 當 props 改變時，自動更新地圖與 marker
-watch(() => [props.lat, props.lon], ([newLat, newLon]) => {
+watch(() => [props.lat, props.lng], ([newLat, newLng]) => {
   if (map && marker) {
-    map.setView([newLat, newLon], map.getZoom());
-    marker.setLatLng([newLat, newLon]);
+    map.setView([newLat, newLng], map.getZoom());
+    marker.setLatLng([newLat, newLng]);
   }
 });
 </script>

@@ -6,8 +6,9 @@
       <!-- Title -->
       <div class="row">
         <label>Title</label>
-        <input type="text" class="input" placeholder="Title" v-model="title" 
-        :class="{ danger: showError && !title && focused != 'title' }" @focus="focused = 'title'" @blur="focused = null"/>
+        <input type="text" class="input" placeholder="Title" v-model="title"
+          :class="{ danger: showError && !title && focused != 'title' }" @focus="focused = 'title'"
+          @blur="focused = null" />
       </div>
 
       <!-- Mood & Intensity -->
@@ -15,13 +16,13 @@
         <div class="field mood">
           <label>Mood</label>
           <select class="input" v-model="mood" v-bind:disabled="disableMood"
-           :class="{ danger: showError && !disableMood && !mood && focused != 'mood' }" @focus="focused = 'mood'" @blur="focused = null">
+            :class="{ danger: showError && !disableMood && !mood && focused != 'mood' }" @focus="focused = 'mood'"
+            @blur="focused = null">
             <option value="">Select Mood</option>
-            <option>😊</option>
-            <option>😢</option>
-            <option>😡</option>
-            <option>😱</option>
-            <option>😐</option>
+            <option value="joy">😊</option>
+            <option value="sad">😢</option>
+            <option value="mad">😡</option>
+            <option value="shook">😱</option>
           </select>
         </div>
 
@@ -46,10 +47,9 @@
       <!-- Datetime -->
       <div class="row">
         <label>Datetime</label>
-        <input type="datetime-local" class="input" v-model="datetime" 
-        :class="{ danger: showError && !datetime && focused !='datetime' }"
-        @focus="focused = 'datetime'" @blur="focused = null"
-        />
+        <input type="datetime-local" class="input" v-model="occurredAt"
+          :class="{ danger: showError && !occurredAt && focused != 'occurredAt' }" @focus="focused = 'occurredAt'"
+          @blur="focused = null" />
       </div>
 
       <!-- Location + Search -->
@@ -57,9 +57,9 @@
         <div class="field location">
           <label>Location</label>
           <input v-model="locationQuery" type="text" class="input" placeholder="Enter a place name"
-            :disabled="disableCoords" :class="{ danger: showError && !disableCoords && !locationQuery && focused != 'location' }"
-            @focus="focused = 'location'" @blur="focused = null"
-            />
+            :disabled="disableCoords"
+            :class="{ danger: showError && !disableCoords && !locationQuery && focused != 'location' }"
+            @focus="focused = 'location'" @blur="focused = null" />
         </div>
         <button class="geo-button" @click="useCurrentLocation" :disabled="disableCoords" title="Use current location">
           <i class="fas fa-crosshairs"></i>
@@ -76,10 +76,9 @@
       <!-- Description -->
       <div class="row">
         <label>Description</label>
-        <textarea class="textarea" rows="4" placeholder="Write something..." v-model="description" 
-        :class="{danger: showError && !description && focused != 'description'}" 
-        @focus="focused = 'description'" @blur="focused = null"
-        ></textarea>
+        <textarea class="textarea" rows="4" placeholder="Write something..." v-model="description"
+          :class="{ danger: showError && !description && focused != 'description' }" @focus="focused = 'description'"
+          @blur="focused = null"></textarea>
       </div>
 
 
@@ -95,7 +94,7 @@
       <div class="row">
         <label>Map</label>
         <div class="small-map-wrapper">
-          <NoteMapView :lat="mapLat" :lon="mapLon" :enableClick="true" @mapClick="handleMapClick" />
+          <NoteMapView :lat="mapLat" :lng="mapLng" :enableClick="true" @mapClick="handleMapClick" />
         </div>
       </div>
 
@@ -111,13 +110,8 @@
     <TabBar />
   </div>
 
-  <Dialog
-    :visible="showDialog"
-    :message="dialogMessage"
-    :showCancel="confirmingSave"
-    @confirm="onDialogConfirm"
-    @cancel="onDialogCancel"
-  />
+  <Dialog :visible="showDialog" :message="dialogMessage" :showCancel="confirmingSave" @confirm="onDialogConfirm"
+    @cancel="onDialogCancel" />
 
 </template>
 
@@ -128,12 +122,15 @@ import TabBar from '../components/TabBar.vue';
 import NoteMapView from '../components/NoteMapView.vue';
 
 import Dialog from '../components/Dialog.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 // 表單欄位
 const title = ref('');
 const mood = ref('');
 const intensity = ref('');
-const datetime = ref('');
+const occurredAt = ref('');
 const description = ref('');
 const locationQuery = ref('');
 const disableCoords = ref(false); // ✅ 預設不儲存座標
@@ -143,7 +140,7 @@ const showDialog = ref(false); // ✅ 用於顯示確認對話框
 
 // 地圖座標
 const mapLat = ref(25.0339);  // 初始中心點台北 101
-const mapLon = ref(121.5645);
+const mapLng = ref(121.5645);
 
 const focused = ref<string | null>(null) // 用於追蹤當前焦點欄位
 
@@ -157,17 +154,22 @@ async function useCurrentLocation() {
   navigator.geolocation.getCurrentPosition(
     async (position) => {
       const lat = position.coords.latitude;
-      const lon = position.coords.longitude;
+      const lng = position.coords.longitude;
 
       mapLat.value = lat;
-      mapLon.value = lon;
+      mapLng.value = lng;
 
       try {
-        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+            const params = new URLSearchParams({
+      format: 'json',
+      lat: lat.toString(),
+      lon: lng.toString()
+    });
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?${params}`);
         const data = await response.json();
-        locationQuery.value = data.display_name || `${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+        locationQuery.value = data.display_name || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
       } catch {
-        locationQuery.value = `${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+        locationQuery.value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
       }
     },
     (err) => {
@@ -180,17 +182,24 @@ async function useCurrentLocation() {
 }
 
 // 點地圖事件
-async function handleMapClick({ lat, lon }: { lat: number; lon: number }) {
+async function handleMapClick({ lat, lng }: { lat: number; lng: number }) {
   mapLat.value = lat;
-  mapLon.value = lon;
+  mapLng.value = lng;
 
   try {
-    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+
+    const params = new URLSearchParams({
+      format: 'json',
+      lat: lat.toString(),
+      lon: lng.toString()
+    });
+
+    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?${params}`);
     const data = await response.json();
-    locationQuery.value = data.display_name || `${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+    locationQuery.value = data.display_name || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
   } catch (error) {
     console.warn('反查失敗, 改為經緯度', error);
-    locationQuery.value = `${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+    locationQuery.value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
   }
 }
 
@@ -198,15 +207,15 @@ async function handleMapClick({ lat, lon }: { lat: number; lon: number }) {
 async function searchLocation() {
   if (!locationQuery.value) return;
 
-  const latlonRegex = /^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/;
-  if (latlonRegex.test(locationQuery.value.trim())) {
-    const [latStr, lonStr] = locationQuery.value.split(',');
+  const latlngRegex = /^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/;
+  if (latlngRegex.test(locationQuery.value.trim())) {
+    const [latStr, lngStr] = locationQuery.value.split(',');
     const lat = parseFloat(latStr.trim());
-    const lon = parseFloat(lonStr.trim());
+    const lng = parseFloat(lngStr.trim());
 
-    if (!isNaN(lat) && !isNaN(lon)) {
+    if (!isNaN(lat) && !isNaN(lng)) {
       mapLat.value = lat;
-      mapLon.value = lon;
+      mapLng.value = lng;
       return;
     }
   }
@@ -217,9 +226,9 @@ async function searchLocation() {
 
     if (data.length > 0) {
       const lat = parseFloat(data[0].lat);
-      const lon = parseFloat(data[0].lon);
+      const lng = parseFloat(data[0].lng);
       mapLat.value = lat;
-      mapLon.value = lon;
+      mapLng.value = lng;
     } else {
       // alert('Location not found');
       showDialog.value = true;
@@ -242,7 +251,7 @@ function validateAndPrompt() {
   if (!title.value) missing.push('Title');
   if (!disableMood.value && !mood.value) missing.push('Mood');
   if (!disableMood.value && !intensity.value) missing.push('Intensity');
-  if (!datetime.value) missing.push('Datetime');
+  if (!occurredAt.value) missing.push('Datetime');
   if (!disableCoords.value && !locationQuery.value) missing.push('Location');
   if (!description.value) missing.push('Description');
 
@@ -252,10 +261,9 @@ function validateAndPrompt() {
     confirmingSave.value = false;
     showDialog.value = true;
   } else {
-    dialogMessage.value = `Save this note ${disableCoords || disableMood ? 'without:' : ''} ${
-      (disableCoords ? 'Location, ' : '') +
-      (disableMood ? 'Mood, Intensity' : '')
-    }?`;
+    dialogMessage.value = `Save this note ${disableCoords.value || disableMood.value ? 'without:' : ''} ${(disableCoords.value ? 'Location, ' : '') +
+      (disableMood.value ? 'Mood, Intensity' : '')
+      }?`;
     confirmingSave.value = true;
     showDialog.value = true;
   }
@@ -272,23 +280,72 @@ function onDialogConfirm() {
   saveNote();
 }
 
-// 儲存 JSON
-function saveNote() {
+const saving = ref(false);
+
+async function saveNote() {
+
+  if (saving.value) return; // 防止重複提交
+  saving.value = true;
+
+
+  const API_URL = import.meta.env.VITE_API_URL
+
   const note = {
     title: title.value,
-    mood: !(disableMood.value) ? mood.value: '',
-    intensity: !(disableMood.value) ? Number(intensity.value): 0,
-    datetime: datetime.value,
+    mood: !(disableMood.value) ? mood.value : '',
+    intensity: !(disableMood.value) ? Number(intensity.value) : 0,
+    occurredAt: occurredAt.value,
     locationName: !(disableCoords.value) ? locationQuery.value : '',
     location: !(disableCoords.value)
-      ? { lat: mapLat.value, lon: mapLon.value }
+      ? { lat: mapLat.value, lng: mapLng.value }
       : null,
     description: description.value,
     imageUrl: null
   };
 
-  console.log('✅ Note JSON:', JSON.stringify(note, null, 2));
+  const token = localStorage.getItem('token');
+
+  try {
+    const res = await fetch(`${API_URL}/memories`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+       },
+    
+      body: JSON.stringify(note)
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.error || 'Failed to save');
+    }
+
+    const result = await res.json();
+    console.log('✅ Saved to backend:', result);
+
+    // ✅ 顯示提示
+    dialogMessage.value = 'Note saved successfully!';
+    showDialog.value = true;
+
+    setTimeout(() => {
+      router.push('/story');
+    }, 1500);
+
+
+
+  } catch (err) {
+    if (err instanceof TypeError && err.message.includes('Failed to fetch')) {
+      dialogMessage.value = 'Network error. Please check your internet or try again later.';
+    } else {
+      dialogMessage.value = `Save failed: ${err instanceof Error ? err.message : 'Unknown error'}`;
+    }
+    showDialog.value = true;
+  } finally {
+    saving.value = false;
+  }
 }
+
 
 function onDialogCancel() {
   showDialog.value = false;
@@ -307,7 +364,8 @@ button:disabled {
   cursor: not-allowed;
 }
 
-.input.danger, .textarea.danger {
+.input.danger,
+.textarea.danger {
   border: 2px solid var(--color-danger);
 }
 

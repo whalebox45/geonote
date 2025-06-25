@@ -48,7 +48,10 @@ const login = async () => {
         if (res.status === 200) {
             // 登入成功，處理登入邏輯
             console.log('Login successful:', res.data);
+
             // 可以在這裡儲存 token 或其他用戶資料
+            localStorage.setItem('token', res.data.token); // 假設 API 返回 token
+
             router.push('/story'); // 登入成功後跳轉到故事頁面
         } else {
             console.error('Login failed:', res.data);
