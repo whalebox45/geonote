@@ -6,14 +6,17 @@
       <!-- Title -->
       <div class="row">
         <label>Title</label>
-        <input type="text" class="input" placeholder="Title" v-model="title" />
+        <input type="text" class="input" placeholder="Title" v-model="title" 
+        :class="{ danger: showError && !title && focused != 'title' }" @focus="focused = 'title'" @blur="focused = null"/>
       </div>
 
       <!-- Mood & Intensity -->
       <div class="row horizontal">
         <div class="field mood">
           <label>Mood</label>
-          <select class="input" v-model="mood" v-bind:disabled="noMood">
+          <select class="input" v-model="mood" v-bind:disabled="disableMood"
+           :class="{ danger: showError && !disableMood && !mood && focused != 'mood' }" @focus="focused = 'mood'" @blur="focused = null">
+            <option value="">Select Mood</option>
             <option>😊</option>
             <option>😢</option>
             <option>😡</option>
@@ -24,7 +27,9 @@
 
         <div class="field intensity">
           <label>Intensity</label>
-          <select class="input" v-model="intensity" v-bind:disabled="noMood">
+          <select class="input" v-model="intensity" v-bind:disabled="disableMood"
+            :class="{ danger: showError && !disableMood && !intensity && focused != 'intensity' }"
+            @focus="focused = 'intensity'" @blur="focused = null">
             <option value="1">Low</option>
             <option value="2">Moderate</option>
             <option value="3">High</option>
@@ -34,14 +39,17 @@
 
       <!-- Checkbox: No Mood -->
       <div class="row horizontal">
-        <input type="checkbox" id="noMood" v-model="noMood" />
-        <label for="noMood">No Mood</label>
+        <input type="checkbox" id="disableMood" v-model="disableMood" />
+        <label for="disableMood">No Mood</label>
       </div>
 
       <!-- Datetime -->
       <div class="row">
         <label>Datetime</label>
-        <input type="datetime-local" class="input" v-model="datetime" />
+        <input type="datetime-local" class="input" v-model="datetime" 
+        :class="{ danger: showError && !datetime && focused !='datetime' }"
+        @focus="focused = 'datetime'" @blur="focused = null"
+        />
       </div>
 
       <!-- Location + Search -->
@@ -49,7 +57,9 @@
         <div class="field location">
           <label>Location</label>
           <input v-model="locationQuery" type="text" class="input" placeholder="Enter a place name"
-            :disabled="disableCoords" />
+            :disabled="disableCoords" :class="{ danger: showError && !disableCoords && !locationQuery && focused != 'location' }"
+            @focus="focused = 'location'" @blur="focused = null"
+            />
         </div>
         <button class="geo-button" @click="useCurrentLocation" :disabled="disableCoords" title="Use current location">
           <i class="fas fa-crosshairs"></i>
@@ -66,8 +76,12 @@
       <!-- Description -->
       <div class="row">
         <label>Description</label>
-        <textarea class="textarea" rows="4" placeholder="Write something..." v-model="description"></textarea>
+        <textarea class="textarea" rows="4" placeholder="Write something..." v-model="description" 
+        :class="{danger: showError && !description && focused != 'description'}" 
+        @focus="focused = 'description'" @blur="focused = null"
+        ></textarea>
       </div>
+
 
       <!-- Image Upload -->
       <div class="row">
@@ -87,7 +101,7 @@
 
       <!-- Save -->
       <div class="row">
-        <button class="save-button" @click="saveNote">Save</button>
+        <button class="save-button" @click="validateAndPrompt">Save</button>
       </div>
     </div>
 
@@ -98,11 +112,12 @@
   </div>
 
   <Dialog
-  :visible="showDialog"
-  message="你確定要儲存這筆資料嗎？"
-  :showCancel="true"
-  @confirm="onDialogConfirm"
-  @cancel="onDialogCancel" />
+    :visible="showDialog"
+    :message="dialogMessage"
+    :showCancel="confirmingSave"
+    @confirm="onDialogConfirm"
+    @cancel="onDialogCancel"
+  />
 
 </template>
 
@@ -122,13 +137,15 @@ const datetime = ref('');
 const description = ref('');
 const locationQuery = ref('');
 const disableCoords = ref(false); // ✅ 預設不儲存座標
-const noMood = ref(false); // ✅ 預設不禁用心情選擇
+const disableMood = ref(false); // ✅ 預設不禁用心情選擇
 
 const showDialog = ref(false); // ✅ 用於顯示確認對話框
 
 // 地圖座標
 const mapLat = ref(25.0339);  // 初始中心點台北 101
 const mapLon = ref(121.5645);
+
+const focused = ref<string | null>(null) // 用於追蹤當前焦點欄位
 
 // 定位按鈕
 async function useCurrentLocation() {
@@ -155,7 +172,9 @@ async function useCurrentLocation() {
     },
     (err) => {
       console.error('定位失敗', err);
-      alert('無法取得定位');
+      // alert('無法取得定位');
+      showDialog.value = true;
+      dialogMessage.value = 'Cannot get current location. Please enter coordinates manually, or check your browser settings.';
     }
   );
 }
@@ -170,7 +189,7 @@ async function handleMapClick({ lat, lon }: { lat: number; lon: number }) {
     const data = await response.json();
     locationQuery.value = data.display_name || `${lat.toFixed(6)}, ${lon.toFixed(6)}`;
   } catch (error) {
-    console.error('反查失敗', error);
+    console.warn('反查失敗, 改為經緯度', error);
     locationQuery.value = `${lat.toFixed(6)}, ${lon.toFixed(6)}`;
   }
 }
@@ -202,19 +221,63 @@ async function searchLocation() {
       mapLat.value = lat;
       mapLon.value = lon;
     } else {
-      alert('查無地點');
+      // alert('Location not found');
+      showDialog.value = true;
+      dialogMessage.value = 'Location not found. Please try another search term.';
     }
   } catch (error) {
     console.error('搜尋失敗', error);
   }
 }
 
+
+
+const showError = ref(false);
+const dialogMessage = ref('');
+const confirmingSave = ref(false);
+
+function validateAndPrompt() {
+  showError.value = false;
+  let missing = [];
+  if (!title.value) missing.push('Title');
+  if (!disableMood.value && !mood.value) missing.push('Mood');
+  if (!disableMood.value && !intensity.value) missing.push('Intensity');
+  if (!datetime.value) missing.push('Datetime');
+  if (!disableCoords.value && !locationQuery.value) missing.push('Location');
+  if (!description.value) missing.push('Description');
+
+  if (missing.length > 0) {
+    showError.value = true;
+    dialogMessage.value = 'Missing: \n' + missing.join(', ');
+    confirmingSave.value = false;
+    showDialog.value = true;
+  } else {
+    dialogMessage.value = `Save this note ${disableCoords || disableMood ? 'without:' : ''} ${
+      (disableCoords ? 'Location, ' : '') +
+      (disableMood ? 'Mood, Intensity' : '')
+    }?`;
+    confirmingSave.value = true;
+    showDialog.value = true;
+  }
+}
+
+
+function onDialogConfirm() {
+  if (!confirmingSave.value) {
+    showDialog.value = false;
+    return;
+  }
+  showDialog.value = false;
+  confirmingSave.value = false;
+  saveNote();
+}
+
 // 儲存 JSON
 function saveNote() {
   const note = {
     title: title.value,
-    mood: !(noMood.value) ? mood.value: '',
-    intensity: !(noMood.value) ? Number(intensity.value): 0,
+    mood: !(disableMood.value) ? mood.value: '',
+    intensity: !(disableMood.value) ? Number(intensity.value): 0,
     datetime: datetime.value,
     locationName: !(disableCoords.value) ? locationQuery.value : '',
     location: !(disableCoords.value)
@@ -225,21 +288,11 @@ function saveNote() {
   };
 
   console.log('✅ Note JSON:', JSON.stringify(note, null, 2));
-
-  // 顯示確認對話框
-  showDialog.value = true;
 }
 
-
-function onDialogConfirm() {
-  showDialog.value = false;
-  // 在這裡處理確認刪除的邏輯
-  console.log('✅ 確認');
-}
 function onDialogCancel() {
   showDialog.value = false;
-  // 在這裡處理取消刪除的邏輯
-  console.log('❌ 取消');
+  confirmingSave.value = false;
 }
 
 </script>
@@ -252,6 +305,10 @@ button:disabled {
   background-color: var(--color-disabled);
   color: var(--color-disabled-bg);
   cursor: not-allowed;
+}
+
+.input.danger, .textarea.danger {
+  border: 2px solid var(--color-danger);
 }
 
 /* === 文字與按鈕 === */
