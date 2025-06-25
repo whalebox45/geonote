@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, watch, ref } from 'vue';
+import { onMounted, watch } from 'vue';
 import L from 'leaflet';
 
 type MarkerData = {

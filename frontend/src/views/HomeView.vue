@@ -86,8 +86,21 @@ function formatTimeAgo(isoDate: string): string {
   return `${Math.floor(diff / 604800)} weeks ago`;
 }
 
-const recentMemoriesWithLocation = computed(() =>
-  recentMemories.value.filter(m => m.location?.lat != null && m.location?.lng != null)
+type MarkerData = {
+  title: string;
+  location: { lat: number; lng: number };
+};
+
+const recentMemoriesWithLocation = computed<MarkerData[]>(() =>
+  recentMemories.value
+    .filter(m => m.location?.lat != null && m.location?.lng != null)
+    .map(m => ({
+      title: m.title,
+      location: {
+        lat: m.location!.lat,
+        lng: m.location!.lng
+      }
+    }))
 );
 
 onMounted(getRecent10Memories);

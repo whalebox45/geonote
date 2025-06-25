@@ -19,7 +19,7 @@
   <script setup lang="ts">
   import { defineProps, defineEmits } from 'vue';
   
-  const props = defineProps({
+  defineProps({
     visible: Boolean,
     message: String,
     showCancel: {
