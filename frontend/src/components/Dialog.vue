@@ -73,18 +73,18 @@
   }
   
   .dialog-message {
-    margin-bottom: 1.5rem;
-    font-size: 1.1rem;
+    margin-bottom: 24px;
+    font-size: 16px;
   }
   
   .dialog-actions {
     display: flex;
     justify-content: center;
-    gap: 1rem;
+    gap: 16px;
   }
   
   .dialog-button {
-    padding: 0.5rem 1.2rem;
+    padding: 8px 12px;
     border: none;
     border-radius: 5px;
     cursor: pointer;

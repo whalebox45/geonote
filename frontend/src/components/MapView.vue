@@ -75,7 +75,7 @@ watch(() => props.markers, (newMarkers) => {
 <style scoped>
 .map-view {
   width: 100%;
-  height: 70vh;
+  height: 100%;
   border-radius: 8px;
   overflow: hidden;
 }

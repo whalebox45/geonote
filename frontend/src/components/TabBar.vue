@@ -41,12 +41,13 @@ const isActive = (path: string) => route.path === path;
   justify-content: space-around;
   align-items: center;
   border-top: 1px solid #ccc;
+  z-index: 1000;
 }
 
 button {
   background: none;
   border: none;
-  font-size: 1.2rem;
+  font-size: 16px;
   color: var(--color-bg);
   cursor: pointer;
 }

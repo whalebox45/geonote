@@ -38,13 +38,13 @@ import TabBar from '../components/TabBar.vue';
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 1rem;
+    padding: 16px;
     padding-bottom: 4rem; // ✅ 保證輸入區不被蓋住
     overflow-y: auto;
 }
 
 .section-title {
-    margin-bottom: 1rem;
+    margin-bottom: 16px;
 }
 
 .chat-messages {
@@ -52,7 +52,7 @@ import TabBar from '../components/TabBar.vue';
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
-    margin-bottom: 1rem;
+    margin-bottom: 16px;
 }
 
 .chat-bubble {
@@ -60,7 +60,7 @@ import TabBar from '../components/TabBar.vue';
     border-radius: 8px;
     padding: 0.6rem 0.8rem;
     font-family: 'Source Serif Pro', serif;
-    font-size: 1rem;
+    font-size: 16px;
     color: var(--color-text);
     align-self: flex-start;
     white-space: pre-wrap;
@@ -78,7 +78,7 @@ import TabBar from '../components/TabBar.vue';
     border-radius: 5px;
     background-color: var(--color-accent);
     font-family: 'Source Serif Pro', serif;
-    font-size: 1rem;
+    font-size: 16px;
 }
 
 .chat-input:focus {
@@ -87,7 +87,7 @@ import TabBar from '../components/TabBar.vue';
 
 .send-button {
     padding: 0.6rem 0.9rem;
-    font-size: 1rem;
+    font-size: 16px;
     background-color: var(--color-primary);
     color: white;
     border: none;

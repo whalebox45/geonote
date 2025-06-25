@@ -111,14 +111,14 @@ function goToRegister() {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 16px;
 }
 
 .btn-group {
     width: 100%;
     display: flex;
     justify-content: flex-end;
-    margin-top: 1rem;
+    margin-top: 16px;
     gap: 0.5rem;
     
     button {
@@ -139,7 +139,7 @@ function goToRegister() {
     align-items: center;
     justify-content: center;
     padding: 0.5rem;
-    font-size: 1rem;
+    font-size: 16px;
     background-color: var(--color-primary);
     color: var(--color-accent);
     gap: 0.3rem;
@@ -151,7 +151,7 @@ function goToRegister() {
     align-items: center;
     justify-content: center;
     padding: 0.5rem;
-    font-size: 1rem;
+    font-size: 16px;
     background-color: var(--color-accent);
     color: var(--color-primary);
     gap: 0.3rem;
@@ -163,7 +163,7 @@ function goToRegister() {
     align-items: center;
     justify-content: center;
     padding: 0.5rem;
-    font-size: 1rem;
+    font-size: 16px;
     background-color: var(--color-accent);
     color: var(--color-primary);
     gap: 0.3rem;
@@ -171,7 +171,7 @@ function goToRegister() {
 
 .input {
     padding: 0.6rem 0.8rem;
-    font-size: 1rem;
+    font-size: 16px;
     border: none;
     border-radius: 5px;
     background-color: var(--color-accent);

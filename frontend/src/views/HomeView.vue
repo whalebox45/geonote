@@ -102,17 +102,21 @@ onMounted(getRecent10Memories);
   background-color: var(--color-bg);
 }
 
+.section-title {
+  font-size: 32px;
+}
+
 .home-container {
-  padding: 1rem;
+  padding: 16px;
   overflow-y: auto;
   flex: 1;
 }
 
 .map-placeholder {
-  height: 70vh;
+  height: 50vh;
   background-color: #c0d6c3;
   border-radius: 8px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 24px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -120,8 +124,8 @@ onMounted(getRecent10Memories);
 }
 
 .recent-title {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
+  font-size: 24px;
+  margin-bottom: 8px;
   color: var(--color-primary);
 }
 
@@ -135,7 +139,7 @@ onMounted(getRecent10Memories);
   background-color: var(--color-accent);
   padding: 0.8rem;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 16px;
   min-height: 100px;
   display: flex;
   flex-direction: column;
@@ -152,7 +156,7 @@ onMounted(getRecent10Memories);
   text-align: center;
   color: #999;
   font-style: italic;
-  padding: 1rem;
+  padding: 16px;
 }
 
 .time {

@@ -84,12 +84,12 @@ const goHome = () => {
 }
 
 .register-container {
-  padding: 1rem;
+  padding: 16px;
   overflow-y: auto;
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 16px;
 }
 
 .header-row {
@@ -100,7 +100,7 @@ const goHome = () => {
 
 
 .home-icon {
-  font-size: 1.3rem;
+  font-size: 16px;
   color: var(--color-primary);
   cursor: pointer;
   transition: transform 0.2s ease;
@@ -123,7 +123,7 @@ const goHome = () => {
   border: none;
   background-color: var(--color-accent);
   font-family: 'Source Serif Pro', serif;
-  font-size: 1rem;
+  font-size: 16px;
   color: var(--color-text);
 }
 
@@ -133,12 +133,12 @@ const goHome = () => {
 }
 
 .submit-button {
-  padding: 0.7rem 1rem;
+  padding: 0.7rem 16px;
   background-color: var(--color-primary);
   color: white;
   font-weight: bold;
   font-family: 'Source Serif Pro', serif;
-  font-size: 1rem;
+  font-size: 16px;
   border: none;
   border-radius: 6px;
   cursor: pointer;

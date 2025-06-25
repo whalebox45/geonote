@@ -387,7 +387,7 @@ button {
   border: none;
   background-color: var(--color-accent);
   font-family: 'Source Serif Pro', serif;
-  font-size: 1rem;
+  font-size: 16px;
   color: var(--color-text);
 }
 
@@ -400,7 +400,7 @@ button {
   border-radius: 5px;
   background-color: var(--color-accent);
   font-family: 'Source Serif Pro', serif;
-  font-size: 1rem;
+  font-size: 16px;
   resize: none;
   border: none;
   color: var(--color-text);
@@ -416,12 +416,12 @@ button {
 }
 
 .note-container {
-  padding: 1rem;
+  padding: 16px;
   overflow-y: auto;
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 16px;
 }
 
 /* === 區塊排版 === */
@@ -433,7 +433,7 @@ button {
 
 .row.horizontal {
   flex-direction: row;
-  gap: 1rem;
+  gap: 16px;
 }
 
 .field {
@@ -471,10 +471,10 @@ button {
 /* === 按鈕樣式 === */
 .search-button {
   align-self: flex-end;
-  padding: 0.6rem 1rem;
+  padding: 0.6rem 16px;
   background-color: var(--color-primary);
   color: white;
-  font-size: 1rem;
+  font-size: 16px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -489,7 +489,7 @@ button {
   padding: 0.6rem;
   background-color: var(--color-accent);
   color: var(--color-text);
-  font-size: 1rem;
+  font-size: 16px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -500,14 +500,14 @@ button {
 }
 
 .save-button {
-  margin-top: 1rem;
+  margin-top: 16px;
   padding: 0.8rem;
   width: 100%;
   background-color: var(--color-primary);
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 1.1rem;
+  font-size: 16px;
   cursor: pointer;
 
   &:hover {
@@ -525,6 +525,6 @@ button {
   align-items: center;
   justify-content: center;
   color: var(--color-primary);
-  font-size: 1.8rem;
+  font-size: 24px;
 }
 </style>
