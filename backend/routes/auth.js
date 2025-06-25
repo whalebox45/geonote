@@ -43,27 +43,26 @@ router.post("/register", async (req, res) => {
     }
   });
 
-router.post("/login", async (req, res) => {
+  router.post("/login", async (req, res) => {
     const { email, password } = req.body;
-
+  
     const account = await Account.findOne({ email });
     if (!account) return res.status(401).json({ error: "Invalid credentials" });
-
+  
     const isMatch = await bcrypt.compare(password, account.passwordHash);
     if (!isMatch) return res.status(401).json({ error: "Invalid credentials" });
-
+  
     const user = await User.findById(account.userId);
-    if (!user) return res.status(404).json({ error: "User not found"});
-
-
-
+    if (!user) return res.status(404).json({ error: "User not found" });
+  
     const token = jwt.sign(
-        { userUuid: user.uuid, provider: account.provider },
-        process.env.JWT_SECRET,
-        { expiresIn: "7d" }
+      { userUuid: user.uuid, provider: account.provider },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
     );
-
-    res.json({ token });
-});
+  
+    res.json({ token, userId: user.uuid }); // ✅ 加上這行
+  });
+  
 
 module.exports = router;

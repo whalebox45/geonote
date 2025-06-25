@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 describe("Memories API", () => {
   let server;
   let token;
+  let memoryUuid;
 
   beforeAll(async () => {
     server = app.listen(4002);
@@ -40,22 +41,33 @@ describe("Memories API", () => {
         intensity: 4,
         occurredAt: new Date().toISOString(),
         location: {
-          name: "台南",
           lat: 23.0,
           lng: 120.2,
         },
+        locationName: "台南",
       });
 
     expect(res.statusCode).toBe(201);
     expect(res.body).toHaveProperty("uuid");
+    memoryUuid = res.body.uuid;
   });
 
-  test("取得所有記憶", async () => {
+  test("取得使用者自己的記憶列表", async () => {
     const res = await request(server)
-      .get("/api/memories")
+      .get("/api/memories/me")
       .set("Authorization", `Bearer ${token}`);
 
     expect(res.statusCode).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
+    expect(Array.isArray(res.body.memories)).toBe(true);
+    expect(res.body).toHaveProperty("totalCount");
+    expect(res.body).toHaveProperty("totalPages");
+  });
+
+  test("查詢單一記憶", async () => {
+    const res = await request(server)
+      .get(`/api/memories/${memoryUuid}`);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("uuid", memoryUuid);
   });
 });
