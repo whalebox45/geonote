@@ -1,55 +1,78 @@
 <template>
-  <div id="map" class="map"></div>
+  <div ref="mapContainer" class="map"></div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, watch } from 'vue';
-import * as L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import { onMounted, watch, ref, nextTick, onBeforeUnmount } from 'vue'
+import * as L from 'leaflet'
+import 'leaflet/dist/leaflet.css'
 
 const props = defineProps<{
-  lat: number;
-  lng: number;
-  enableClick?: boolean;
-}>();
+  lat: number
+  lng: number
+  enableClick?: boolean
+}>()
 
 const emit = defineEmits<{
-  (e: 'mapClick', payload: { lat: number; lng: number }): void;
-}>();
+  (e: 'mapClick', payload: { lat: number; lng: number }): void
+}>()
 
-let map: L.Map;
-let marker: L.Marker;
+const mapContainer = ref<HTMLElement | null>(null)
+let map: L.Map
+let marker: L.Marker
 
-onMounted(() => {
+const clickHandler = (e: L.LeafletMouseEvent) => {
+  const { lat, lng } = e.latlng
+  marker.setLatLng([lat, lng])
+  emit('mapClick', { lat, lng })
+}
+
+onMounted(async () => {
+  await nextTick() // 確保 DOM 已渲染
+  if (!mapContainer.value) return
+
   // 初始化地圖
-  map = L.map('map', { attributionControl: false }).setView([props.lat, props.lng], 13);
+  map = L.map(mapContainer.value, { attributionControl: false }).setView([props.lat, props.lng], 13)
 
-  // 圖磚層
+  // 加入圖磚
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(map);
+  }).addTo(map)
 
-  // 初始 marker
-  marker = L.marker([props.lat, props.lng]).addTo(map);
+  // 加入標記
+  marker = L.marker([props.lat, props.lng]).addTo(map)
 
-  // 點擊事件
+  // 初次根據 props.enableClick 綁定事件
   if (props.enableClick) {
-    map.on('click', (e: L.LeafletMouseEvent) => {
-      const { lat, lng } = e.latlng;
-      marker.setLatLng([lat, lng]); // 更新 marker
-      emit('mapClick', { lat, lng }); // 傳給父層
-    });
+    map.on('click', clickHandler)
   }
-});
+})
 
-// 當 props 改變時，自動更新地圖與 marker
-watch(() => [props.lat, props.lng], ([newLat, newLng]) => {
+// 監控 props.lat/lng，更新位置
+watch(() => [props.lat, props.lng], ([lat, lng]) => {
   if (map && marker) {
-    map.setView([newLat, newLng], map.getZoom());
-    marker.setLatLng([newLat, newLng]);
+    map.setView([lat, lng], map.getZoom())
+    marker.setLatLng([lat, lng])
   }
-});
+})
+
+// 監控 props.enableClick，動態加/移除 click handler
+watch(() => props.enableClick, (enabled) => {
+  if (!map) return
+  if (enabled) {
+    map.on('click', clickHandler)
+  } else {
+    map.off('click', clickHandler)
+  }
+})
+
+// 清理地圖資源
+onBeforeUnmount(() => {
+  if (map) {
+    map.remove()
+  }
+})
 </script>
 
 <style scoped>

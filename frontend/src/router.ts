@@ -4,12 +4,15 @@ import HomeView from './views/HomeView.vue';
 import NoteView from './views/NoteView.vue';
 import ChatView from './views/ChatView.vue';
 import RegisterView from './views/RegisterView.vue';
+import StoryBookView from './views/StoryBookView.vue';
 
 const routes = [
   { path: '/', name: 'Login', component: LoginView },
+  { path: '/storybook', name: 'StoryBook', component: StoryBookView },
   { path: '/register', name: 'Register', component: RegisterView },
   { path: '/home', name: 'Home', component: HomeView },
-  { path: '/note', name: 'Note', component: NoteView},
+  { path: '/note/new', name: 'NoteNew', component: NoteView},
+  { path: '/note/read/:uuid', name: 'NoteRead', component: NoteView, props: true},
   { path: '/chat', name: 'Chat', component: ChatView}
 ];
 

@@ -6,37 +6,54 @@
       <!-- Title -->
       <div class="row">
         <label>Title</label>
-        <input type="text" class="input" placeholder="Title" v-model="title"
-          :class="{ danger: showError && !title && focused != 'title' }" @focus="focused = 'title'"
-          @blur="focused = null" />
+        <template v-if="isReadOnly">
+          <div class="readonly-field">{{ title }}</div>
+        </template>
+        <template v-else>
+          <input type="text" class="input" placeholder="Title" v-model="title"
+            :class="{ danger: showError && !title && focused != 'title' }" @focus="focused = 'title'"
+            @blur="focused = null" />
+        </template>
       </div>
+
 
       <!-- Mood & Intensity -->
       <div class="row horizontal">
         <div class="field mood">
           <label>Mood</label>
-          <select class="input" v-model="mood" v-bind:disabled="disableMood"
-            :class="{ danger: showError && !disableMood && !mood && focused != 'mood' }" @focus="focused = 'mood'"
-            @blur="focused = null">
-            <option value="">Select Mood</option>
-            <option value="joy">😊</option>
-            <option value="sad">😢</option>
-            <option value="mad">😡</option>
-            <option value="shook">😱</option>
-          </select>
+          <template v-if="isReadOnly">
+            <div class="readonly-field">{{ mood || '-' }}</div>
+          </template>
+          <template v-else>
+            <select class="input" v-model="mood" :disabled="disableMood"
+              :class="{ danger: showError && !disableMood && !mood && focused != 'mood' }" @focus="focused = 'mood'"
+              @blur="focused = null">
+              <option value="">Select Mood</option>
+              <option value="joy">😊</option>
+              <option value="sad">😢</option>
+              <option value="mad">😡</option>
+              <option value="shook">😱</option>
+            </select>
+          </template>
         </div>
 
         <div class="field intensity">
           <label>Intensity</label>
-          <select class="input" v-model="intensity" v-bind:disabled="disableMood"
-            :class="{ danger: showError && !disableMood && !intensity && focused != 'intensity' }"
-            @focus="focused = 'intensity'" @blur="focused = null">
-            <option value="1">Low</option>
-            <option value="2">Moderate</option>
-            <option value="3">High</option>
-          </select>
+          <template v-if="isReadOnly">
+            <div class="readonly-field">{{ intensity || '-' }}</div>
+          </template>
+          <template v-else>
+            <select class="input" v-model="intensity" :disabled="disableMood"
+              :class="{ danger: showError && !disableMood && !intensity && focused != 'intensity' }"
+              @focus="focused = 'intensity'" @blur="focused = null">
+              <option value="1">Low</option>
+              <option value="2">Moderate</option>
+              <option value="3">High</option>
+            </select>
+          </template>
         </div>
       </div>
+
 
       <!-- Checkbox: No Mood -->
       <div class="row horizontal">
@@ -47,25 +64,38 @@
       <!-- Datetime -->
       <div class="row">
         <label>Datetime</label>
-        <input type="datetime-local" class="input" v-model="occurredAt"
-          :class="{ danger: showError && !occurredAt && focused != 'occurredAt' }" @focus="focused = 'occurredAt'"
-          @blur="focused = null" />
+        <template v-if="isReadOnly">
+          <div class="readonly-field">{{ occurredAt }}</div>
+        </template>
+        <template v-else>
+          <input type="datetime-local" class="input" v-model="occurredAt"
+            :class="{ danger: showError && !occurredAt && focused != 'occurredAt' }" @focus="focused = 'occurredAt'"
+            @blur="focused = null" />
+        </template>
       </div>
+
 
       <!-- Location + Search -->
       <div class="row horizontal">
         <div class="field location">
           <label>Location</label>
-          <input v-model="locationQuery" type="text" class="input" placeholder="Enter a place name"
-            :disabled="disableCoords"
-            :class="{ danger: showError && !disableCoords && !locationQuery && focused != 'location' }"
-            @focus="focused = 'location'" @blur="focused = null" />
+          <template v-if="isReadOnly">
+            <div class="readonly-field">{{ locationQuery }}</div>
+          </template>
+          <template v-else>
+            <input v-model="locationQuery" type="text" class="input" placeholder="Enter a place name"
+              :disabled="disableCoords"
+              :class="{ danger: showError && !disableCoords && !locationQuery && focused != 'location' }"
+              @focus="focused = 'location'" @blur="focused = null" />
+          </template>
         </div>
-        <button class="geo-button" @click="useCurrentLocation" :disabled="disableCoords" title="Use current location">
+
+        <button class="geo-button" @click="useCurrentLocation" :disabled="disableCoords || isReadOnly">
           <i class="fas fa-crosshairs"></i>
         </button>
-        <button class="search-button" @click="searchLocation" :disabled="disableCoords">Search</button>
+        <button class="search-button" @click="searchLocation" :disabled="disableCoords || isReadOnly">Search</button>
       </div>
+
 
       <!-- Checkbox: Include coordinates -->
       <div class="row horizontal" style="align-items: center;">
@@ -76,10 +106,16 @@
       <!-- Description -->
       <div class="row">
         <label>Description</label>
-        <textarea class="textarea" rows="4" placeholder="Write something..." v-model="description"
-          :class="{ danger: showError && !description && focused != 'description' }" @focus="focused = 'description'"
-          @blur="focused = null"></textarea>
+        <template v-if="isReadOnly">
+          <div class="readonly-field" style="white-space: pre-wrap;">{{ description }}</div>
+        </template>
+        <template v-else>
+          <textarea class="textarea" rows="4" placeholder="Write something..." v-model="description"
+            :class="{ danger: showError && !description && focused != 'description' }" @focus="focused = 'description'"
+            @blur="focused = null"></textarea>
+        </template>
       </div>
+
 
 
       <!-- Image Upload -->
@@ -94,12 +130,12 @@
       <div class="row">
         <label>Map</label>
         <div class="small-map-wrapper">
-          <NoteMapView :lat="mapLat" :lng="mapLng" :enableClick="true" @mapClick="handleMapClick" />
+          <NoteMapView :lat="mapLat" :lng="mapLng" :enableClick="!isReadOnly" @mapClick="handleMapClick" />
         </div>
       </div>
 
       <!-- Save -->
-      <div class="row">
+      <div class="row" v-if="!isReadOnly">
         <button class="save-button" @click="validateAndPrompt">Save</button>
       </div>
     </div>
@@ -117,7 +153,7 @@
 
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, watch, ref } from 'vue';
 import TabBar from '../components/TabBar.vue';
 import NoteMapView from '../components/NoteMapView.vue';
 
@@ -125,6 +161,11 @@ import Dialog from '../components/Dialog.vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+import { useRoute } from 'vue-router';
+import axios from 'axios';
+const route = useRoute();
+const uuid = route.params.uuid as string | undefined
+const isReadOnly = ref(false)
 
 // 表單欄位
 const title = ref('');
@@ -144,6 +185,34 @@ const mapLng = ref(121.5645);
 
 const focused = ref<string | null>(null) // 用於追蹤當前焦點欄位
 
+const API_URL = import.meta.env.VITE_API_URL;
+
+
+watch(() => route.fullPath, (newPath) => {
+  if (newPath === '/note/new') {
+    isReadOnly.value = false
+    resetForm()
+  } else if (newPath.startsWith('/note/read/')) {
+    const uuid = route.params.uuid as string
+    isReadOnly.value = true
+    fetchMemory(uuid)
+  }
+})
+
+function resetForm() {
+  title.value = ''
+  mood.value = ''
+  intensity.value = ''
+  occurredAt.value = ''
+  description.value = ''
+  locationQuery.value = ''
+  disableCoords.value = false
+  disableMood.value = false
+  mapLat.value = 25.0339
+  mapLng.value = 121.5645
+}
+
+
 // 定位按鈕
 async function useCurrentLocation() {
   if (!navigator.geolocation) {
@@ -160,12 +229,12 @@ async function useCurrentLocation() {
       mapLng.value = lng;
 
       try {
-            const params = new URLSearchParams({
-      format: 'json',
-      lat: lat.toString(),
-      lon: lng.toString()
-    });
-        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?${params}`);
+        const params = new URLSearchParams({
+          format: 'json',
+          lat: lat.toString(),
+          lon: lng.toString()
+        });
+        const response = await fetch(`${API_URL}/proxy/reverse?lat=${lat}&lon=${lng}`);
         const data = await response.json();
         locationQuery.value = data.display_name || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
       } catch {
@@ -221,7 +290,7 @@ async function searchLocation() {
   }
 
   try {
-    const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationQuery.value)}`);
+    const response = await fetch(`${API_URL}/proxy/search?q=${encodeURIComponent(locationQuery.value)}`);
     const data = await response.json();
 
     console.debug(data)
@@ -315,11 +384,11 @@ async function saveNote() {
   try {
     const res = await fetch(`${API_URL}/memories`, {
       method: 'POST',
-      headers: { 
+      headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
-       },
-    
+      },
+
       body: JSON.stringify(note)
     });
 
@@ -359,11 +428,50 @@ function onDialogCancel() {
   confirmingSave.value = false;
 }
 
+async function fetchMemory(uuid: string) {
+  const API_URL = import.meta.env.VITE_API_URL
+  try {
+    const res = await axios.get(`${API_URL}/memories/${uuid}`)
+    const data = res.data
+
+    title.value = data.title
+    mood.value = data.mood || ''
+    intensity.value = data.intensity?.toString() || ''
+    occurredAt.value = data.occurredAt?.slice(0, 16) || ''
+    description.value = data.description
+    locationQuery.value = data.locationName || ''
+    mapLat.value = data.location?.lat || 25.0339
+    mapLng.value = data.location?.lng || 121.5645
+
+    disableCoords.value = !data.location
+    disableMood.value = !data.mood && !data.intensity
+  } catch (err) {
+    console.error('Error loading memory', err)
+  }
+}
+
+
+onMounted(async () => {
+  if (route.path.startsWith('/note/read/') && uuid) {
+    isReadOnly.value = true
+    await fetchMemory(uuid)
+  }
+})
+
+
 </script>
 
 
 <style scoped lang="scss">
 /* === 狀態樣式 === */
+
+.readonly-field {
+  background-color: transparent;
+  font-size: 1rem;
+  color: var(--color-text);
+  padding: 0.4rem 0;
+}
+
 .input:disabled,
 button:disabled {
   background-color: var(--color-disabled);

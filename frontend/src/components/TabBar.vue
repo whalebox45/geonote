@@ -1,9 +1,12 @@
 <template>
   <nav class="tab-bar">
     <button @click="go('/home')" :class="{ active: isActive('/home') }">
-      <i class="fas fa-book-open"></i>
+      <i class="fas fa-home"></i>
     </button>
-    <button @click="go('/note')" :class="{ active: isActive('/note') }">
+    <button @click="go('/storybook')" :class="{ active: isActive('/home') }">
+      <i class="fas fa-book"></i>
+    </button>
+    <button @click="go('/note/new')" :class="{ active: isActive('/note') }">
       <i class="fas fa-pen"></i>
     </button>
     <button @click="go('/chat')" :class="{ active: isActive('/chat') }">

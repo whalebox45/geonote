@@ -28,6 +28,10 @@
           No memories yet.
         </div>
       </div>
+      
+      <div class="row">
+        <button class="see-more-button" @click="go('/storybook')">See All</button>
+      </div>
     </div>
 
     <div style="height: 50px;"></div>
@@ -39,6 +43,21 @@
 import { ref, onMounted, computed } from 'vue';
 import TabBar from '../components/TabBar.vue';
 import MapView from '../components/MapView.vue';
+import { formatTimeAgo } from '../utils/datetimeConvert';
+import { useRoute, useRouter } from 'vue-router';
+
+
+const router = useRouter();
+const route = useRoute();
+
+const uuid = route.params.uuid as string | undefined
+const isReadOnly = ref(false)
+
+const go = (path: string) => {
+  if (route.path !== path) {
+    router.push(path);
+  }
+};
 
 type Memory = {
   _id: string;
@@ -74,17 +93,7 @@ async function getRecent10Memories() {
   }
 }
 
-function formatTimeAgo(isoDate: string): string {
-  const now = new Date();
-  const then = new Date(isoDate);
-  const diff = (now.getTime() - then.getTime()) / 1000;
 
-  if (diff < 60) return 'Just now';
-  if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)} hrs ago`;
-  if (diff < 604800) return `${Math.floor(diff / 86400)} days ago`;
-  return `${Math.floor(diff / 604800)} weeks ago`;
-}
 
 type MarkerData = {
   title: string;
@@ -175,5 +184,22 @@ onMounted(getRecent10Memories);
 .time {
   font-size: 0.75rem;
   color: #666;
+}
+
+.see-more-button {
+  margin-top: 16px;
+  padding: 0.8rem;
+  width: 100%;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  font-family: 'Source Serif Pro', serif;
+
+  &:hover {
+    opacity: 0.9;
+  }
 }
 </style>
