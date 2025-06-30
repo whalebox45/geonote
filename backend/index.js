@@ -28,6 +28,9 @@ app.use('/api/users', require('./routes/users'));
 
 app.use('/api/auth', require('./routes/auth'));
 
+app.use('/api/proxy', require('./routes/proxy'));
+
+
 app.get('/', (req, res) => {
   res.send('Server is running and healthy!');
 });
