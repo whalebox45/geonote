@@ -12,7 +12,7 @@
     <button @click="go('/chat')" :class="{ active: isActive('/chat') }">
       <i class="fas fa-comments"></i>
     </button>
-    <button @click="go('/')">
+    <button @click="go('/settings')" :class="{ active: isActive('/settings') }">
       <i class="fas fa-cog"></i>
     </button>
   </nav>
