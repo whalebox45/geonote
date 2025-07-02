@@ -30,6 +30,8 @@ app.use('/api/auth', require('./routes/auth'));
 
 app.use('/api/proxy', require('./routes/proxy'));
 
+app.use('/api/accounts', require('./routes/accounts'));
+
 
 app.get('/', (req, res) => {
   res.send('Server is running and healthy!');
