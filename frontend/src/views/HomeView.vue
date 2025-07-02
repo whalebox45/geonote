@@ -20,7 +20,10 @@
             :key="memory._id"
             class="memory-card"
           >
-            {{ memory.title }}<br />
+            <a :href="'#/note/read/' + memory.uuid" class="memory-title">
+              {{ memory.title }}
+            </a>
+            <br />
             <span class="time">{{ formatTimeAgo(memory.occurredAt) }}</span>
           </div>
         </template>
@@ -61,6 +64,7 @@ const go = (path: string) => {
 
 type Memory = {
   _id: string;
+  uuid: string;
   title: string;
   occurredAt: string;
   location?: {

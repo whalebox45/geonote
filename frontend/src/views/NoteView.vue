@@ -134,10 +134,38 @@
         </div>
       </div>
 
-      <!-- Save -->
-      <div class="row" v-if="!isReadOnly">
-        <button class="save-button" @click="validateAndPrompt">Save</button>
+
+      <div class="row" v-if="isEditing">
+        <!-- Cancel only in edit mode -->
+        <button class="cancel-button" @click="cancelEdit">
+          Cancel
+        </button>
       </div>
+      <!-- Save, Edit 按鈕 -->
+      <div class="row">
+
+
+        <!-- Save only in non-readonly -->
+        <button v-if="!isReadOnly" class="save-button" @click="validateAndPrompt">
+          Save
+        </button>
+
+        <!-- Edit only in readonly -->
+        <button v-if="isReadOnly" class="save-button" @click="goToEditPage">
+          Edit
+        </button>
+      </div>
+
+      <div class="row" v-if="isReadOnly">
+
+        <button class="delete-button" @click="promptDelete">
+          Delete
+        </button>
+      </div>
+
+
+
+
     </div>
 
 
@@ -166,6 +194,11 @@ import axios from 'axios';
 const route = useRoute();
 const uuid = route.params.uuid as string | undefined
 const isReadOnly = ref(false)
+const isEditing = ref(false)
+
+
+const confirmingDelete = ref(false)
+
 
 // 表單欄位
 const title = ref('');
@@ -188,13 +221,22 @@ const focused = ref<string | null>(null) // 用於追蹤當前焦點欄位
 const API_URL = import.meta.env.VITE_API_URL;
 
 
+
+
 watch(() => route.fullPath, (newPath) => {
   if (newPath === '/note/new') {
     isReadOnly.value = false
+    isEditing.value = false
     resetForm()
   } else if (newPath.startsWith('/note/read/')) {
-    const uuid = route.params.uuid as string
     isReadOnly.value = true
+    isEditing.value = false
+    const uuid = route.params.uuid as string
+    fetchMemory(uuid)
+  } else if (newPath.startsWith('/note/edit/')) {
+    isReadOnly.value = false
+    isEditing.value = true
+    const uuid = route.params.uuid as string
     fetchMemory(uuid)
   }
 })
@@ -210,6 +252,11 @@ function resetForm() {
   disableMood.value = false
   mapLat.value = 25.0339
   mapLng.value = 121.5645
+}
+
+function goToEditPage() {
+  const uuid = route.params.uuid as string
+  router.push(`/note/edit/${uuid}`)
 }
 
 
@@ -347,25 +394,36 @@ function validateAndPrompt() {
 
 
 function onDialogConfirm() {
-  if (!confirmingSave.value) {
-    showDialog.value = false;
-    return;
+  if (confirmingSave.value) {
+    showDialog.value = false
+    confirmingSave.value = false
+    saveNote()
+  } else if (confirmingDelete.value) {
+    showDialog.value = false
+    confirmingDelete.value = false
+    deleteMemory()
+  } else {
+    showDialog.value = false
   }
-  showDialog.value = false;
-  confirmingSave.value = false;
-  saveNote();
 }
 
 const saving = ref(false);
 
-async function saveNote() {
+function cancelEdit() {
+  const uuid = route.params.uuid as string
+  if (uuid) {
+    router.push(`/note/read/${uuid}`)
+  } else {
+    router.push('/home')
+  }
+}
 
-  if (saving.value) return; // 防止重複提交
-  saving.value = true;
 
+const saveNote = async () => {
+  if (saving.value) return
+  saving.value = true
 
-  const API_URL = import.meta.env.VITE_API_URL
-
+  const token = localStorage.getItem('token')
   const note = {
     title: title.value,
     mood: !(disableMood.value) ? mood.value : '',
@@ -377,48 +435,45 @@ async function saveNote() {
       : null,
     description: description.value,
     imageUrl: null
-  };
+  }
 
-  const token = localStorage.getItem('token');
+  const url = isEditing.value
+    ? `${API_URL}/memories/${route.params.uuid}`
+    : `${API_URL}/memories`
+  const method = isEditing.value ? 'PUT' : 'POST'
 
   try {
-    const res = await fetch(`${API_URL}/memories`, {
-      method: 'POST',
+    const res = await fetch(url, {
+      method,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-
       body: JSON.stringify(note)
-    });
+    })
 
     if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(errorData.error || 'Failed to save');
+      const errorData = await res.json()
+      throw new Error(errorData.error || 'Failed to save')
     }
 
-    const result = await res.json();
-    console.log('✅ Saved to backend:', result);
-
-    // ✅ 顯示提示
-    dialogMessage.value = 'Note saved successfully!';
-    showDialog.value = true;
+    const result = await res.json()
+    dialogMessage.value = isEditing.value ? 'Note updated!' : 'Note saved successfully!'
+    showDialog.value = true
 
     setTimeout(() => {
-      router.push('/home');
-    }, 1500);
-
-
+      if (isEditing.value && route.params.uuid) {
+        router.push(`/note/read/${route.params.uuid}`)
+      } else {
+        router.push('/home')
+      }
+    }, 1500)
 
   } catch (err) {
-    if (err instanceof TypeError && err.message.includes('Failed to fetch')) {
-      dialogMessage.value = 'Network error. Please check your internet or try again later.';
-    } else {
-      dialogMessage.value = `Save failed: ${err instanceof Error ? err.message : 'Unknown error'}`;
-    }
-    showDialog.value = true;
+    dialogMessage.value = `Save failed: ${err instanceof Error ? err.message : 'Unknown error'}`
+    showDialog.value = true
   } finally {
-    saving.value = false;
+    saving.value = false
   }
 }
 
@@ -451,12 +506,57 @@ async function fetchMemory(uuid: string) {
 }
 
 
-onMounted(async () => {
-  if (route.path.startsWith('/note/read/') && uuid) {
+onMounted(() => {
+  const path = route.path
+  const uuid = route.params.uuid as string
+
+  if (path.startsWith('/note/edit/') && uuid) {
+    isReadOnly.value = false
+    isEditing.value = true
+    fetchMemory(uuid)
+  } else if (path.startsWith('/note/read/') && uuid) {
     isReadOnly.value = true
-    await fetchMemory(uuid)
+    isEditing.value = false
+    fetchMemory(uuid)
+  } else if (path === '/note/new') {
+    isReadOnly.value = false
+    isEditing.value = false
+    resetForm()
   }
 })
+
+
+function promptDelete() {
+  dialogMessage.value = 'Are you sure you want to delete this memory?'
+  confirmingDelete.value = true
+  showDialog.value = true
+}
+
+async function deleteMemory() {
+  const uuid = route.params.uuid as string
+  const token = localStorage.getItem('token')
+
+  try {
+    const res = await fetch(`${API_URL}/memories/${uuid}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+
+    if (!res.ok) throw new Error('Failed to delete')
+
+    dialogMessage.value = 'Memory deleted.'
+    showDialog.value = true
+
+    setTimeout(() => {
+      router.push('/home')
+    }, 1500)
+  } catch (err) {
+    dialogMessage.value = `Delete failed: ${err instanceof Error ? err.message : 'Unknown error'}`
+    showDialog.value = true
+  }
+}
 
 
 </script>
@@ -482,6 +582,11 @@ button:disabled {
 .input.danger,
 .textarea.danger {
   border: 2px solid var(--color-danger);
+}
+
+input[type="datetime-local"] {
+  width: 100%;
+  min-width: 100%;
 }
 
 /* === 文字與按鈕 === */
@@ -542,8 +647,8 @@ button {
 .row.horizontal {
   flex-direction: row;
   gap: 16px;
+  flex-wrap: wrap; // ⬅ 加這行最保險
 }
-
 .field {
   display: flex;
   flex-direction: column;
@@ -623,6 +728,22 @@ button {
   }
 }
 
+.cancel-button {
+  @extend .save-button;
+  background-color: var(--color-accent);
+  color: var(--color-text);
+}
+
+.delete-button {
+  @extend .save-button;
+  background-color: var(--color-danger);
+  color: white;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
 /* === 圖片上傳區塊 === */
 .image-upload {
   height: 120px;
@@ -634,5 +755,17 @@ button {
   justify-content: center;
   color: var(--color-primary);
   font-size: 24px;
+}
+
+
+@media (max-width: 360px) {
+  .row.horizontal.location-row {
+    flex-direction: column;
+
+    .geo-button,
+    .search-button {
+      width: 100%;
+    }
+  }
 }
 </style>

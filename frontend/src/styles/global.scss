@@ -19,10 +19,22 @@ html, body {
   color: var(--color-text);
 }
 
+a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  &:hover {
+    color: var(--color-secondary);
+  }
+  &:visited {
+    color: var(--color-purple);
+  }
+}
+
 /* 變數定義 */
 :root {
   --color-bg: #ccddcc;
   --color-primary: #557777;
+  --color-secondary: #889988;
   --color-accent: #eeeedd;
   --color-text: #111111;
   --color-disabled-bg: #888888;

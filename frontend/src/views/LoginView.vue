@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import axios from 'axios';
-import { ref } from 'vue';
+import { ref,onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 const router = useRouter();
 
@@ -37,6 +37,13 @@ const API_URL = import.meta.env.VITE_API_URL;
 const username = ref('');
 const password = ref('');
 
+
+onMounted(() => {
+  const token = localStorage.getItem('token')
+  if (token) {
+    router.push('/home')
+  }
+})
 
 const login = async () => {
     try {
