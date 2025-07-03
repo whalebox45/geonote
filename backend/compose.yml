@@ -1,0 +1,35 @@
+name: geonote
+services:
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app           # bind mount: 主機檔案映射到容器
+      - /app/node_modules
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/geonote
+    depends_on:
+      - mongo
+
+  
+  test: # 測試專用容器
+    build: .
+    command: npm test
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/geonote
+    depends_on:
+      - mongo
+
+volumes:
+  mongo_data:

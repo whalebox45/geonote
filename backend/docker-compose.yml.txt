@@ -1,6 +1,6 @@
 # backend/docker-compose.yml
 version: '3.8'
-
+name: geonote
 services:
   mongo:
     image: mongo
