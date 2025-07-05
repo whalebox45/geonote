@@ -1,123 +1,139 @@
-GeoNote Backend
 
-GeoNote 是一個結合地圖、記憶、情緒與圖片的個人潛意識剪輯系統。本資料夾為其後端專案，使用 Node.js + Express + MongoDB，搭配 Docker 快速部署。
+# GeoNote
 
-📦 技術棨
+**GeoNote** is a location-based memory journaling app that lets users record personal notes, emotions, and images tied to real-world places. Built as a mobile-first Progressive Web App (PWA), GeoNote emphasizes simplicity, privacy, and a sense of spatial reflection.
 
-Node.js + Express
+This repository covers both **Frontend (Vue 3 + Vite)** and **Backend (Node.js + Express + MongoDB)** components. The project is currently in MVP (Minimum Viable Product) stage.
 
-MongoDB + Mongoose
+---
 
-RESTful API
+## ✨ Features
 
-Multer 圖片上傳（本地端儲存）
+- 🗺️ Map-based memory system using OpenStreetMap
+- 🔐 JWT-based authentication with login/register flow
+- 📝 CRUD operations for memories (notes), including image uploads
+- 📄 Pagination support for memory list
+- 📱 Mobile-first responsive design
+- ⚙️ Docker support for easy deployment
+- 🌙 Light/Dark theme switching
+- 🧠 Designed for spatial emotional journaling
 
-UUID 記憶 ID
+---
 
-JWT 登入認證（含 Dev Token 模擬登入）
+## 🛠️ Tech Stack
 
-Docker / docker-compose 一鍵啟動
+### Frontend
 
-🚀 快速開始
+- Vue 3
+- Vite
+- TypeScript
+- Vue Router
+- SCSS / Sass
+- Font Awesome
+- vue3-openlayers (OpenStreetMap)
+- PWA support
 
-1️⃣ 下載專案
+### Backend
 
-git clone https://github.com/your-username/geonote.git
-cd geonote/backend
+- Node.js + Express
+- MongoDB + Mongoose
+- JWT Authentication
+- Multer for image uploads
+- RESTful API (JSON)
+- Docker / Docker Compose
 
-2️⃣ 建立 .env
+---
 
-# backend/.env
-MONGO_URI=mongodb://localhost:27017/geonote
-JWT_SECRET=your_super_secret_key
+## 🚀 Getting Started
 
-若使用 Docker Compose，會自動使用 mongodb://mongo:27017/geonote
+### Prerequisites
 
-3️⃣ 啟動專案（本地）
+- Node.js >= 18
+- MongoDB instance (local or Docker)
+- (Optional) Docker & Docker Compose
 
-安裝依賴
+---
 
+### 1. Backend Setup
+
+```bash
+cd backend
+cp .env.example .env
 npm install
-
-啟動服務
-
 npm run dev
+```
 
-4️⃣ 啟動專案（使用 Docker）
+`.env` example:
 
-docker-compose up --build
+```env
+MONGO_URI=mongodb://localhost:27017/geonote
+JWT_SECRET=your_secret_key
+PORT=3000
+```
 
-啟動後：
+API will run at: `http://localhost:3000/api`
 
-API → http://localhost:3000/api
+---
 
-MongoDB → 透過 GUI 工具（如 Compass）連線 localhost:27017
+### 2. Docker (Optional)
 
-圖片資料夾 → backend/uploads/
+```bash
+docker compose -f backend/compose.yml up --build
+```
 
-🧪 測試 API
+This sets up both API server and MongoDB in containers.
 
-使用 VSCode REST Client 插件，開啟 tests/test.http，點選 ▶ Send Request 即可。
+---
 
-支援：
+## 🧪 API Overview
 
-使用者建立 / 編輯 / 刪除
+Base: `http://localhost:3000/api`
 
-記憶 CRUD（含圖片上傳）
+### Auth
 
-登入註冊（JWT）驗證與權限保護
+- `POST /auth/register` — Create new user
+- `POST /auth/login` — Returns JWT
 
-Dev Token 模擬身分驗證（可選）
+### Memories
 
-🔐 登入與認證機制
+- `GET /memories/me?page=1` — Paginated memories of current user
+- `POST /memories` — Create new memory
+- `PUT /memories/:uuid` — Update memory
+- `DELETE /memories/:uuid` — Delete memory
+- `GET /memories/:uuid` — Fetch one memory
 
-GeoNote 採用 JWT 認證：
+### Uploads
 
-註冊：POST /api/auth/register，傳入 email / password / nickname
+- `POST /upload` — Upload image (multipart/form-data)
 
-登入：POST /api/auth/login，成功後回傳 JWT token
+> All memory-related endpoints require `Authorization: Bearer <token>` header.
 
-權限保護：在需要登入的 API 加入 header：
+---
 
-Authorization: Bearer <你的 token>
+## 🧩 Backend Structure
 
-預設有效期限為 7 天，token 會攜帶 userId 與 provider 資訊。
-
-📁 專案結構
-
+```
 backend/
-├── models/           # Mongoose 資料模型
-├── routes/           # API 路由：auth, users, memories, upload
-├── middleware/       # JWT / Dev token 驗證
-├── uploads/          # 上傳圖片暫存
-├── tests/            # REST Client 測試檔
-├── index.js          # 主伺服器
-├── Dockerfile        # Express 容器建置
-├── docker-compose.yml
-├── .env              # MongoDB URI, JWT_SECRET
-└── .dockerignore
+├── models/                 # Mongoose schemas
+├── routes/                 # REST API routes
+├── middleware/             # JWT auth middleware
+├── uploads/                # Image storage
+├── index.js / server.js    # Main entry point
+├── Dockerfile
+├── compose.yml
+```
 
-🧐 Dev Token 模擬登入（可選）
+---
 
-在請求 header 中加入：
+## 📃 License
 
-Authorization: Bearer devtoken123
-
-即可繞過登入驗證，作為測試帳戶傳入 req.user = { uuid: 'test-user-uuid' }。
+MIT © Kei  
 
 
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-✅ 進度狀態
-- 使用者與記憶 CRUD
-- 本地圖片上傳
-- MongoDB 容器化
-- REST Client 測試
-- 真實登入認證（未實作）
-- LLM 整合（未實作）
-- 前端（Vue）建置（進行中）
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-📬 聯繫與作者
-
-作者：whale 願這個世界留下屬於你的記憶。
-
+GeoNote is an experimental personal spatial journaling tool. Feel free to fork or build on top.

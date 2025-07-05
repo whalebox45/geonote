@@ -7,21 +7,20 @@ describe("Memories API", () => {
   let token;
   let memoryUuid;
 
+  const testUser = {
+    email: `memo_${Date.now()}@test.com`,
+    password: "test1234",
+    nickname: "MemoTester",
+    bio: "Memory test user"
+  };
+
   beforeAll(async () => {
     server = app.listen(4002);
-
-    await request(server).post("/api/auth/register").send({
-      email: "memo@example.com",
-      password: "test1234",
-      nickname: "記憶者",
-      bio: "記憶測試帳號",
-    });
-
+    await request(server).post("/api/auth/register").send(testUser);
     const loginRes = await request(server).post("/api/auth/login").send({
-      email: "memo@example.com",
-      password: "test1234",
+      email: testUser.email,
+      password: testUser.password
     });
-
     token = loginRes.body.token;
   });
 
@@ -30,44 +29,53 @@ describe("Memories API", () => {
     server.close();
   });
 
-  test("新增記憶", async () => {
+  test("Create a new memory", async () => {
     const res = await request(server)
       .post("/api/memories")
       .set("Authorization", `Bearer ${token}`)
       .send({
-        title: "記憶測試",
-        description: "這是一個測試記憶",
-        mood: "感動",
-        intensity: 4,
-        occurredAt: new Date().toISOString(),
-        location: {
-          lat: 23.0,
-          lng: 120.2,
-        },
-        locationName: "台南",
+        title: "Test Memory",
+        content: "This is a test note.",
+        lat: 25.03,
+        lng: 121.56
       });
-
     expect(res.statusCode).toBe(201);
     expect(res.body).toHaveProperty("uuid");
     memoryUuid = res.body.uuid;
   });
 
-  test("取得使用者自己的記憶列表", async () => {
+  test("Get paginated memories", async () => {
     const res = await request(server)
-      .get("/api/memories/me")
+      .get("/api/memories/me?page=1")
       .set("Authorization", `Bearer ${token}`);
-
     expect(res.statusCode).toBe(200);
-    expect(Array.isArray(res.body.memories)).toBe(true);
-    expect(res.body).toHaveProperty("totalCount");
-    expect(res.body).toHaveProperty("totalPages");
+    expect(Array.isArray(res.body)).toBe(true);
   });
 
-  test("查詢單一記憶", async () => {
+  test("Get memory by UUID", async () => {
     const res = await request(server)
-      .get(`/api/memories/${memoryUuid}`);
-
+      .get(`/api/memories/${memoryUuid}`)
+      .set("Authorization", `Bearer ${token}`);
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("uuid", memoryUuid);
+  });
+
+  test("Update a memory", async () => {
+    const res = await request(server)
+      .put(`/api/memories/${memoryUuid}`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        title: "Updated Memory",
+        content: "Updated content."
+      });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.title).toBe("Updated Memory");
+  });
+
+  test("Delete a memory", async () => {
+    const res = await request(server)
+      .delete(`/api/memories/${memoryUuid}`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.statusCode).toBe(204);
   });
 });

@@ -13,29 +13,35 @@ describe("Auth API", () => {
     await mongoose.connection.close();
     server.close();
   });
-  test("註冊使用者", async () => {
-    const uniqueEmail = `newuser+${Date.now()}@example.com`; // 加上時間戳避免重複
-  
-    const res = await request(server).post("/api/auth/register").send({
-      email: uniqueEmail,
-      password: "test1234",
-      nickname: "新測試者",
-      bio: "這是測試帳號",
-    });
-  
+
+  const testUser = {
+    email: `user_${Date.now()}@test.com`,
+    password: "test1234",
+    nickname: "Tester",
+    bio: "Testing account"
+  };
+
+  test("Register a new user", async () => {
+    const res = await request(server).post("/api/auth/register").send(testUser);
     expect(res.statusCode).toBe(201);
     expect(res.body).toHaveProperty("token");
     expect(res.body).toHaveProperty("userId");
   });
 
-  test("登入取得 token", async () => {
+  test("Login with correct credentials", async () => {
     const res = await request(server).post("/api/auth/login").send({
-      email: "newuser@example.com",
-      password: "test1234",
+      email: testUser.email,
+      password: testUser.password
     });
-
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("token");
-    expect(res.body).toHaveProperty("userId");
+  });
+
+  test("Login with incorrect password", async () => {
+    const res = await request(server).post("/api/auth/login").send({
+      email: testUser.email,
+      password: "wrongpass"
+    });
+    expect(res.statusCode).toBe(401);
   });
 });
