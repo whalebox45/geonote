@@ -118,13 +118,24 @@
 
 
 
-      <!-- Image Upload -->
-      <div class="row">
-        <label>Image</label>
-        <div class="image-upload">
-          <i class="fas fa-plus fa-2x"></i>
+      <!-- Editable 狀態才顯示上傳欄位 -->
+      <template v-if="!isReadOnly">
+        <div class="row">
+          <label>Image</label>
+          <input type="file" @change="handleFileUpload" accept="image/*" />
+          <div v-if="imageUrl" class="preview">
+            <img :src="imageUrl" alt="Preview" style="max-width: 100%;" />
+          </div>
         </div>
-      </div>
+      </template>
+
+      <!-- Read-only 模式顯示圖片預覽 -->
+      <template v-if="isReadOnly && imageUrl">
+        <div class="row">
+          <label>Image</label>
+          <img :src="imageUrl" alt="Note Image" class="readonly-image" style="max-width: 100%; " />
+        </div>
+      </template>
 
       <!-- Map -->
       <div class="row">
@@ -219,7 +230,7 @@ const mapLng = ref(121.5645);
 const focused = ref<string | null>(null) // 用於追蹤當前焦點欄位
 
 const API_URL = import.meta.env.VITE_API_URL;
-
+const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL;
 
 
 
@@ -284,17 +295,18 @@ async function useCurrentLocation() {
         const response = await fetch(`${API_URL}/proxy/reverse?lat=${lat}&lon=${lng}`);
         const data = await response.json();
         locationQuery.value = data.display_name || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-      } catch {
+      } catch (err) {
+        console.error("Reverse geocoding failed", err);
         locationQuery.value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
       }
     },
     (err) => {
-      console.error('定位失敗', err);
-      // alert('無法取得定位');
+      console.error("Geolocation failed", err);
       showDialog.value = true;
       dialogMessage.value = 'Cannot get current location. Please enter coordinates manually, or check your browser settings.';
     }
   );
+
 }
 
 // 點地圖事件
@@ -309,8 +321,7 @@ async function handleMapClick({ lat, lng }: { lat: number; lng: number }) {
       lat: lat.toString(),
       lon: lng.toString()
     });
-
-    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?${params}`);
+    const response = await fetch(`${API_URL}/proxy/reverse?${params}`);
     const data = await response.json();
     locationQuery.value = data.display_name || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
   } catch (error) {
@@ -434,7 +445,7 @@ const saveNote = async () => {
       ? { lat: mapLat.value, lng: mapLng.value }
       : null,
     description: description.value,
-    imageUrl: null
+    imageUrl: imageUrl.value
   }
 
   const url = isEditing.value
@@ -497,6 +508,8 @@ async function fetchMemory(uuid: string) {
     locationQuery.value = data.locationName || ''
     mapLat.value = data.location?.lat || 25.0339
     mapLng.value = data.location?.lng || 121.5645
+    imageUrl.value = data.imageUrl || null
+
 
     disableCoords.value = !data.location
     disableMood.value = !data.mood && !data.intensity
@@ -558,6 +571,26 @@ async function deleteMemory() {
   }
 }
 
+const imageUrl = ref<string | null>(null);
+
+const handleFileUpload = async (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  if (!target.files || target.files.length === 0) return;
+
+  const formData = new FormData();
+  formData.append("image", target.files[0]);
+
+  try {
+    const response = await axios.post(`${API_URL}/upload`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    imageUrl.value = `${IMAGE_BASE_URL}${response.data.imageUrl}`;
+  } catch (error) {
+    console.error("Image upload failed:", error);
+    showDialog.value = true;
+    dialogMessage.value = 'Image upload failed. Please try again later.';
+  }
+};
 
 </script>
 
@@ -649,6 +682,7 @@ button {
   gap: 16px;
   flex-wrap: wrap; // ⬅ 加這行最保險
 }
+
 .field {
   display: flex;
   flex-direction: column;
@@ -757,6 +791,12 @@ button {
   font-size: 24px;
 }
 
+
+.preview img,
+.readonly-image {
+  max-height: 300px;
+  object-fit: contain;
+}
 
 @media (max-width: 360px) {
   .row.horizontal.location-row {
