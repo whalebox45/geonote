@@ -6,8 +6,8 @@
             </div>
 
             <div class="form">
-                <input type="text" placeholder="Username" class="input" v-model="username"/>
-                <input type="password" placeholder="Passphrase" class="input" v-model="password"/>
+                <input type="text" placeholder="Username" class="input" v-model="username" />
+                <input type="password" placeholder="Passphrase" class="input" v-model="password" />
             </div>
 
             <div class="btn-group">
@@ -23,13 +23,20 @@
                 </button>
             </div>
         </div>
+        <Dialog :visible="showDialog" :message="dialogMessage" @confirm="showDialog = false" />
     </div>
+
+
 </template>
 
 <script setup lang="ts">
 import axios from 'axios';
-import { ref,onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+
+
+import Dialog from '../components/Dialog.vue';
+
 const router = useRouter();
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -37,19 +44,22 @@ const API_URL = import.meta.env.VITE_API_URL;
 const username = ref('');
 const password = ref('');
 
+const showDialog = ref(false);
+const dialogMessage = ref('');
+
 
 onMounted(() => {
-  const token = localStorage.getItem('token')
-  if (token) {
-    router.push('/home')
-  }
+    const token = localStorage.getItem('token')
+    if (token) {
+        router.push('/home')
+    }
 })
 
 const login = async () => {
     try {
         const res = await axios.post(`${API_URL}/auth/login`, {
             email: username.value, // 替換為實際的用戶名
-            password:  password.value // 替換為實際的密碼
+            password: password.value // 替換為實際的密碼
         });
 
         if (res.status === 200) {
@@ -64,14 +74,12 @@ const login = async () => {
             console.error('Login failed:', res.data);
         }
     } catch (err: any) {
-        console.error('Login error:', err);
-        if (err.response && err.response.status === 401) {
-            // 處理未授權錯誤
-            console.error('Invalid username or password. Please try again.');
+        if (err.response?.status === 401) {
+            dialogMessage.value = 'Invalid username or password.';
         } else {
-            // 處理其他錯誤
-            console.error('An error occurred while logging in. Please try again later.');
+            dialogMessage.value = 'Login error. Please try again later.';
         }
+        showDialog.value = true;
     }
 }
 
@@ -127,12 +135,12 @@ function goToRegister() {
     justify-content: flex-end;
     margin-top: 16px;
     gap: 0.5rem;
-    
+
     button {
         border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: 'Source Serif Pro', serif;
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: 'Source Serif Pro', serif;
     }
 
     button:hover {

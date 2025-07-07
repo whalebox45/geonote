@@ -1,6 +1,6 @@
 <template>
-  <div class="home-page">
-    <div class="home-container">
+  <div class="mobile-page-base">
+    <div class="container">
       <h2 class="section-title">Home</h2>
 
       <div class="map-placeholder">
@@ -120,23 +120,11 @@ onMounted(getRecent10Memories);
 </script>
 
 <style scoped lang="scss">
-.home-page {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background-color: var(--color-bg);
-}
 
 .section-title {
   font-size: 32px;
 }
 
-.home-container {
-  padding: 16px;
-  overflow-y: auto;
-  flex: 1;
-}
 
 .map-placeholder {
   height: 50vh;

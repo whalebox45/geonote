@@ -1,6 +1,6 @@
 <template>
-  <div class="settings-page">
-    <div class="settings-container">
+  <div class="mobile-page-base">
+    <div class="container">
       <h2 class="section-title">Profile & Settings</h2>
 
       <div class="form">
@@ -106,19 +106,6 @@ function logout() {
 </script>
 
 <style scoped lang="scss">
-.settings-page {
-  height: 100vh;
-  background-color: var(--color-bg);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.settings-container {
-  padding: 16px;
-  overflow-y: auto;
-  flex: 1;
-}
 
 .section-title {
   font-size: 32px;

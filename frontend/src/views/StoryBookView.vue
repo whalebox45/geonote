@@ -1,6 +1,6 @@
 <template>
-    <div class="memories-page">
-      <div class="memories-container">
+    <div class="mobile-page-base">
+      <div class="container">
         <h2 class="section-title">All Memories</h2>
   
         <div class="memory-list">
@@ -90,19 +90,6 @@
   </script>
   
   <style scoped lang="scss">
-  .memories-page {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    background-color: var(--color-bg);
-  }
-  
-  .memories-container {
-    padding: 16px;
-    overflow-y: auto;
-    flex: 1;
-  }
   
   .section-title {
     font-size: 32px;

@@ -1,6 +1,6 @@
 <template>
-  <div class="note-page">
-    <div class="note-container">
+  <div class="mobile-page-base">
+    <div class="container">
       <h2 class="section-title">Note</h2>
 
       <!-- Title -->
@@ -653,18 +653,8 @@ button {
 }
 
 /* === 主容器 === */
-.note-page {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background-color: var(--color-bg);
-}
 
-.note-container {
-  padding: 16px;
-  overflow-y: auto;
-  flex: 1;
+.container {
   display: flex;
   flex-direction: column;
   gap: 16px;

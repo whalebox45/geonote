@@ -1,6 +1,6 @@
 <template>
-  <div class="register-page">
-    <div class="register-container">
+  <div class="mobile-page-base">
+    <div class="container">
       <div class="header-row">
         <h2 class="section-title">Register</h2>
         <i class="fas fa-home home-icon" @click="goHome"></i>
@@ -28,9 +28,10 @@
 
       <button class="submit-button" @click="register">Submit</button>
 
-      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-      <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
     </div>
+
+    <Dialog :visible="showDialog" :message="dialogMessage" @confirm="showDialog = false" />
+
   </div>
 </template>
 
@@ -38,6 +39,7 @@
 import axios from 'axios'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import Dialog from '../components/Dialog.vue'
 
 const router = useRouter()
 
@@ -50,9 +52,18 @@ const successMessage = ref('')
 
 const API_URL = import.meta.env.VITE_API_URL
 
+const showDialog = ref(false)
+const dialogMessage = ref('')
+
+
 const register = async () => {
-  errorMessage.value = ''
-  successMessage.value = ''
+  // 前端欄位檢查
+  if (!email.value || !password.value || !nickname.value) {
+    dialogMessage.value = 'Please fill in all required fields.'
+    showDialog.value = true
+    return
+  }
+
   try {
     const res = await axios.post(`${API_URL}/auth/register`, {
       email: email.value,
@@ -62,13 +73,18 @@ const register = async () => {
     })
 
     localStorage.setItem('token', res.data.token)
-    successMessage.value = '註冊成功！'
-    router.push('/home')
+    dialogMessage.value = 'Registration successful! Redirecting to the homepage...'
+    showDialog.value = true
+
+    setTimeout(() => {
+      router.push('/home')
+    }, 1500)
   } catch (err: any) {
-    errorMessage.value = err.response?.data?.error || 'Registration failed.'
+    dialogMessage.value = err.response?.data?.message || 'Registration failed, please try again later.'
+    showDialog.value = true
   }
-  
 }
+
 
 const goHome = () => {
   router.push('/')
@@ -76,17 +92,7 @@ const goHome = () => {
 </script>
 
 <style scoped lang="scss">
-.register-page {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--color-bg);
-}
-
-.register-container {
-  padding: 16px;
-  overflow-y: auto;
-  flex: 1;
+.container {
   display: flex;
   flex-direction: column;
   gap: 16px;
