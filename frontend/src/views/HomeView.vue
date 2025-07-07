@@ -12,7 +12,7 @@
         />
       </div>
 
-      <h3 class="recent-title">Recent Memories</h3>
+      <h3 class="subsection-title">Recent Memories</h3>
       <div class="memory-list">
         <template v-if="recentMemories.length > 0">
           <div
@@ -33,7 +33,7 @@
       </div>
       
       <div class="row">
-        <button class="see-more-button" @click="go('/storybook')">See All</button>
+        <button class="big-button" @click="go('/storybook')">See All</button>
       </div>
     </div>
 
@@ -121,27 +121,17 @@ onMounted(getRecent10Memories);
 
 <style scoped lang="scss">
 
-.section-title {
-  font-size: 32px;
-}
-
-
 .map-placeholder {
   height: 50vh;
-  background-color: #c0d6c3;
+  background-color: var(--color-bg);
   border-radius: 8px;
   margin-bottom: 24px;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #666;
+  color: var(--color-disabled-bg);
 }
 
-.recent-title {
-  font-size: 24px;
-  margin-bottom: 8px;
-  color: var(--color-primary);
-}
 
 .memory-list {
   display: grid;
@@ -168,30 +158,15 @@ onMounted(getRecent10Memories);
 .memory-placeholder {
   grid-column: span 2;
   text-align: center;
-  color: #999;
+  color: var(--color-disabled-bg);
+
   font-style: italic;
   padding: 16px;
 }
 
 .time {
   font-size: 0.75rem;
-  color: #666;
+  
 }
 
-.see-more-button {
-  margin-top: 16px;
-  padding: 0.8rem;
-  width: 100%;
-  background-color: var(--color-primary);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  font-family: 'Source Serif Pro', serif;
-
-  &:hover {
-    opacity: 0.9;
-  }
-}
 </style>

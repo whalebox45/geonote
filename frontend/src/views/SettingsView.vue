@@ -28,8 +28,8 @@
           <img :src="avatarUrl" alt="avatar" />
         </div> -->
 
-        <button class="save-button" @click="saveProfile">Save</button>
-        <button class="logout-button" @click="logout">Logout</button>
+        <button class="big-button" @click="saveProfile">Save</button>
+        <button class="big-button logout-button" @click="logout">Logout</button>
       </div>
     </div>
 
@@ -107,11 +107,6 @@ function logout() {
 
 <style scoped lang="scss">
 
-.section-title {
-  font-size: 32px;
-  margin-bottom: 16px;
-  color: var(--color-text);
-}
 
 .form {
   display: flex;
@@ -160,25 +155,8 @@ function logout() {
   }
 }
 
-.save-button,
-.logout-button {
-  width: 100%;
-  padding: 0.8rem;
-  font-size: 16px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-family: 'Source Serif Pro', serif;
-}
-
-.save-button {
-  background-color: var(--color-primary);
-  color: white;
-}
 
 .logout-button {
-  margin-top: 8px;
-  background-color: var(--color-danger, #d9534f);
-  color: white;
-}
+  background-color: var(--color-danger) !important;
+  }
 </style>

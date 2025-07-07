@@ -148,7 +148,7 @@
 
       <div class="row" v-if="isEditing">
         <!-- Cancel only in edit mode -->
-        <button class="cancel-button" @click="cancelEdit">
+        <button class="big-button cancel-button" @click="cancelEdit">
           Cancel
         </button>
       </div>
@@ -157,19 +157,19 @@
 
 
         <!-- Save only in non-readonly -->
-        <button v-if="!isReadOnly" class="save-button" @click="validateAndPrompt">
+        <button v-if="!isReadOnly" class="big-button" @click="validateAndPrompt">
           Save
         </button>
 
         <!-- Edit only in readonly -->
-        <button v-if="isReadOnly" class="save-button" @click="goToEditPage">
+        <button v-if="isReadOnly" class="big-button" @click="goToEditPage">
           Edit
         </button>
       </div>
 
       <div class="row" v-if="isReadOnly">
 
-        <button class="delete-button" @click="promptDelete">
+        <button class="big-button delete-button" @click="promptDelete">
           Delete
         </button>
       </div>
@@ -736,36 +736,15 @@ button {
   }
 }
 
-.save-button {
-  margin-top: 16px;
-  padding: 0.8rem;
-  width: 100%;
-  background-color: var(--color-primary);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.9;
-  }
-}
 
 .cancel-button {
-  @extend .save-button;
-  background-color: var(--color-accent);
-  color: var(--color-text);
+  background-color: var(--color-accent) !important;
+  color: var(--color-text) !important;
 }
 
 .delete-button {
-  @extend .save-button;
-  background-color: var(--color-danger);
+  background-color: var(--color-danger) !important;
   color: white;
-
-  &:hover {
-    opacity: 0.9;
-  }
 }
 
 /* === 圖片上傳區塊 === */

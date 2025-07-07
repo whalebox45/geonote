@@ -26,7 +26,7 @@
         <textarea v-model="bio" class="textarea" rows="3" placeholder="Write something about yourself..."></textarea>
       </div>
 
-      <button class="submit-button" @click="register">Submit</button>
+      <button class="big-button" @click="register">Submit</button>
 
     </div>
 
@@ -138,21 +138,6 @@ const goHome = () => {
   outline: 2px solid var(--color-primary);
 }
 
-.submit-button {
-  padding: 0.7rem 16px;
-  background-color: var(--color-primary);
-  color: white;
-  font-weight: bold;
-  font-family: 'Source Serif Pro', serif;
-  font-size: 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.submit-button:hover {
-  opacity: 0.9;
-}
 
 .error-message {
   color: red;

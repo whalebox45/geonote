@@ -64,4 +64,29 @@ a {
     overflow-y: auto;
     flex: 1;
   }
+  .section-title {
+    font-size: 32px;
+    color: var(--color-text);
+  }
+  .subsection-title {
+    font-size: 24px;
+    color: var(--color-primary);
+    margin-bottom: 8px;
+  }
+  .big-button {
+    margin-top: 16px;
+    padding: 0.8rem;
+    width: 100%;
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    font-family: 'Source Serif Pro', serif;
+  
+    &:hover {
+      opacity: 0.9;
+    }
+  }
 }
