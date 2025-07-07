@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const router = express.Router();
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -8,7 +9,9 @@ const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/');
+    const uploadDir = path.join(__dirname, '../uploads');
+    fs.mkdirSync(uploadDir, { recursive: true }); // ✅ 自動建立
+    cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
@@ -32,7 +35,11 @@ const upload = multer({
 });
 
 router.post('/', upload.single('image'), (req, res) => {
-  res.json({ imageUrl: `/uploads/${req.file.filename}` });
+  res.json({
+    imageUrl: `/uploads/${req.file.filename}`,
+    fullUrl: `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`
+  });
+  
 });
 
 // 錯誤處理：大小與類型限制

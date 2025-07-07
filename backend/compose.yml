@@ -6,14 +6,18 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
-
+    
   backend:
     build: .
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
     ports:
       - "3000:3000"
     volumes:
       - .:/app           # bind mount: 主機檔案映射到容器
       - /app/node_modules
+      - ./uploads:/app/uploads 
     environment:
       - MONGO_URI=mongodb://mongo:27017/geonote
     depends_on:
