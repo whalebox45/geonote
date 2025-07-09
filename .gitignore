@@ -1,6 +1,0 @@
-backend/.env
-backend/node_modules
-backend/mongo_data
-backend/uploads/*
-
-*.tar.gz
