@@ -53,8 +53,8 @@ import { useRoute, useRouter } from 'vue-router';
 const router = useRouter();
 const route = useRoute();
 
-const uuid = route.params.uuid as string | undefined
-const isReadOnly = ref(false)
+// const uuid = route.params.uuid as string | undefined
+// const isReadOnly = ref(false)
 
 const go = (path: string) => {
   if (route.path !== path) {

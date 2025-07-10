@@ -203,7 +203,7 @@ const router = useRouter();
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 const route = useRoute();
-const uuid = route.params.uuid as string | undefined
+// const uuid = route.params.uuid as string | undefined
 const isReadOnly = ref(false)
 const isEditing = ref(false)
 
@@ -287,11 +287,11 @@ async function useCurrentLocation() {
       mapLng.value = lng;
 
       try {
-        const params = new URLSearchParams({
-          format: 'json',
-          lat: lat.toString(),
-          lon: lng.toString()
-        });
+        // const params = new URLSearchParams({
+        //   format: 'json',
+        //   lat: lat.toString(),
+        //   lon: lng.toString()
+        // });
         const response = await fetch(`${API_URL}/proxy/reverse?lat=${lat}&lon=${lng}`);
         const data = await response.json();
         locationQuery.value = data.display_name || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
@@ -468,7 +468,7 @@ const saveNote = async () => {
       throw new Error(errorData.error || 'Failed to save')
     }
 
-    const result = await res.json()
+    // const result = await res.json()
     dialogMessage.value = isEditing.value ? 'Note updated!' : 'Note saved successfully!'
     showDialog.value = true
 

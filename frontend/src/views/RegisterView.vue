@@ -47,8 +47,8 @@ const email = ref('')
 const password = ref('')
 const nickname = ref('')
 const bio = ref('')
-const errorMessage = ref('')
-const successMessage = ref('')
+// const errorMessage = ref('')
+// const successMessage = ref('')
 
 const API_URL = import.meta.env.VITE_API_URL
 
