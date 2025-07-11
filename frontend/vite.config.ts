@@ -7,7 +7,8 @@ export default defineConfig({
   plugins: [vue(), VitePWA({
     registerType: 'autoUpdate',
     workbox: {
-      maximumFileSizeToCacheInBytes: 5 * 1024 * 1024 // 允許最多 5MB
+      maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 允許最多 5MB
+      globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,ttf,eot,woff}']
     },
     manifest: {
       name: 'GeoNote',

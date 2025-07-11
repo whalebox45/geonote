@@ -325,7 +325,7 @@ async function handleMapClick({ lat, lng }: { lat: number; lng: number }) {
     const data = await response.json();
     locationQuery.value = data.display_name || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
   } catch (error) {
-    console.warn('反查失敗, 改為經緯度', error);
+    console.warn('reverse search failed, search coords', error);
     locationQuery.value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
   }
 }
@@ -369,7 +369,7 @@ async function searchLocation() {
       dialogMessage.value = 'Location not found. Please try another search term.';
     }
   } catch (error) {
-    console.error('搜尋失敗', error);
+    console.error('search error', error);
   }
 }
 
