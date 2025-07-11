@@ -1,0 +1,71 @@
+{
+    "HomeView": {
+      "section_title": "ホーム",
+      "recent": "最近のメモリー",
+      "empty": "メモリーがまだありません",
+      "see_all": "すべてのメモリーを見る"
+    },
+    "LoginView": {
+      "section_title": "サインアップ",
+      "login": "ログイン",
+      "invalid_credentials": "ユーザー名またはパスワードが無効です",
+      "login_error": "ログインエラー、もう一度お試しください"
+    },
+    "NoteView": {
+      "section_title": "ノート",
+      "title": "タイトル",
+      "mood": "気分",
+      "select_mood": "気分を選択",
+      "intensity": "強さ",
+      "low": "弱い",
+      "medium": "普通",
+      "high": "強い",
+      "no_mood": "気分なし",
+      "datetime": "日時",
+      "location": "位置情報",
+      "search_location": "検索",
+      "no_location": "位置情報を保存しない",
+      "description": "説明",
+      "image": "画像",
+      "map": "地図",
+      "cancel": "キャンセル",
+      "save": "保存",
+      "edit": "編集",
+      "delete": "削除",
+      "location_fallback": "現在地を取得できません。手動で入力するか、ブラウザの設定をご確認ください。",
+      "location_not_found": "位置情報が見つかりません。別のキーワードでお試しください。",
+      "missing": "必須項目が未入力です",
+      "save_prompt": "このノートを保存しますか？",
+      "save_without": "次の項目なしで保存：",
+      "save_question_mark": "？",
+      "note_update_success": "ノートが正常に更新されました",
+      "note_create_success": "ノートが作成されました",
+      "save_fail": "ノートの保存に失敗しました",
+      "delete_prompt": "このノートを削除してもよろしいですか？",
+      "delete_success": "ノートが削除されました",
+      "delete_fail": "ノートの削除に失敗しました",
+      "image_upload_error": "画像のアップロードに失敗しました。後でもう一度お試しください。"
+    },
+    "RegisterView": {
+      "section_title": "登録",
+      "email": "メールアドレス",
+      "password": "パスワード",
+      "nickname": "ニックネーム",
+      "bio": "自己紹介",
+      "submit": "送信"
+    },
+    "SettingsView": {
+      "section_title": "設定",
+      "email": "メールアドレス",
+      "nickname": "ニックネーム",
+      "bio": "自己紹介",
+      "change_password": "パスワードを変更",
+      "save": "保存",
+      "logout": "ログアウト"
+    },
+    "StoryBookView": {
+      "section_title": "すべてのノート",
+      "empty": "ノートがまだありません"
+    }
+  }
+  

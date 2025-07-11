@@ -1,0 +1,70 @@
+{
+  "HomeView": {
+    "section_title": "Home",
+    "recent": "Recent Memories",
+    "empty": "No memories yet",
+    "see_all": "See all memories",
+  },
+  "LoginView": {
+    "section_title": "Sign Up",
+    "login": "Login",
+    "invalid_credentials": "Invalid username or password",
+    "login_error": "Login error, please try again"
+  },
+  "NoteView": {
+    "section_title": "Note",
+    "title": "Title",
+    "mood": "Mood",
+    "select_mood": "Select Mood",
+    "intensity": "Intensity",
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "no_mood": "No Mood",
+    "datetime": "Date and Time",
+    "location": "Location",
+    "search_location": "Search",
+    "no_location": "Don't save coordinates",
+    "description": "Description",
+    "image": "Image",
+    "map": "Map",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "location_fallback": "Cannot get current location. Please enter coordinates manually, or check your browser settings.",
+    "location_not_found": "Location not found. Please try another search term.",
+    "missing": "Missing required fields",
+    "save_prompt": "Save this note",
+    "save_without": "without field(s):",
+    "save_question_mark": "?",
+    "note_update_success": "Note updated successfully",
+    "note_create_success": "Note created successfully",
+    "save_fail": "Failed to save note",
+    "delete_prompt": "Are you sure you want to delete this note?",
+    "delete_success": "Note deleted successfully",
+    "delete_fail": "Failed to delete note",
+    "image_upload_error": "Image upload failed, please try again later."
+  },
+  "RegisterView": {
+    "section_title": "Register",
+    "email": "Email",
+    "password": "Password",
+    "nickname": "Nickname",
+    "bio": "Bio",
+    "submit": "Submit"
+  },
+  "SettingsView": {
+    "section_title": "Settings",
+    "email": "Email",
+    "nickname": "Nickname",
+    "bio": "Bio",
+    "change_password": "Change Password",
+    "save": "Save",
+    "logout": "Logout"
+  },
+  "StoryBookView": {
+    "section_title": "All Notes",
+    "empty": "No notes yet"
+  }
+}
