@@ -1,21 +1,21 @@
 <template>
   <div class="mobile-page-base">
     <div class="container">
-      <h2 class="section-title">Profile & Settings</h2>
+      <h2 class="section-title">{{ t("SettingsView.section_title") }}</h2>
 
       <div class="form">
         <div class="row">
-          <label>Email</label>
+          <label>{{  t("SettingsView.email")  }}</label>
           <div class="readonly-field">{{ email }}</div>
         </div>
 
         <div class="row">
-          <label>Nickname</label>
+          <label>{{  t("SettingsView.nickname")  }}</label>
           <input class="input" type="text" v-model="nickname" placeholder="Your nickname" />
         </div>
 
         <div class="row">
-          <label>Bio</label>
+          <label>{{  t("SettingsView.bio")  }}</label>
           <textarea class="textarea" v-model="bio" placeholder="Write something about yourself..."></textarea>
         </div>
 
@@ -28,8 +28,8 @@
           <img :src="avatarUrl" alt="avatar" />
         </div> -->
 
-        <button class="big-button" @click="saveProfile">Save</button>
-        <button class="big-button logout-button" @click="logout">Logout</button>
+        <button class="big-button" @click="saveProfile">{{  t("SettingsView.save")  }}</button>
+        <button class="big-button logout-button" @click="logout">{{  t("SettingsView.logout")  }}</button>
       </div>
     </div>
 
@@ -42,6 +42,9 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import TabBar from '../components/TabBar.vue'
+
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n();
 
 const router = useRouter()
 const API_URL = import.meta.env.VITE_API_URL

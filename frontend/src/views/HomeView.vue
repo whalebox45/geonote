@@ -1,7 +1,7 @@
 <template>
   <div class="mobile-page-base">
     <div class="container">
-      <h2 class="section-title">Home</h2>
+      <h2 class="section-title">{{ t('HomeView.section_title') }}</h2>
 
       <div class="map-placeholder">
         <MapView
@@ -12,7 +12,7 @@
         />
       </div>
 
-      <h3 class="subsection-title">Recent Memories</h3>
+      <h3 class="subsection-title">{{ t("HomeView.recent") }}</h3>
       <div class="memory-list">
         <template v-if="recentMemories.length > 0">
           <div
@@ -28,12 +28,12 @@
           </div>
         </template>
         <div v-else class="memory-placeholder">
-          No memories yet.
+          {{ t("HomeView.empty") }}
         </div>
       </div>
       
       <div class="row">
-        <button class="big-button" @click="go('/storybook')">See All</button>
+        <button class="big-button" @click="go('/storybook')"> {{ t("HomeView.see_all") }} </button>
       </div>
     </div>
 
@@ -49,6 +49,8 @@ import MapView from '../components/MapView.vue';
 import { formatTimeAgo } from '../utils/datetimeConvert';
 import { useRoute, useRouter } from 'vue-router';
 
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 
 const router = useRouter();
 const route = useRoute();

@@ -89,7 +89,6 @@
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
-    font-family: 'Source Serif Pro', serif;
   }
   
   .dialog-button.confirm {

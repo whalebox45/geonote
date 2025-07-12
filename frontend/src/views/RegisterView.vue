@@ -2,31 +2,31 @@
   <div class="mobile-page-base">
     <div class="container">
       <div class="header-row">
-        <h2 class="section-title">Register</h2>
+        <h2 class="section-title">{{ t("RegisterView.section_title")}}</h2>
         <i class="fas fa-home home-icon" @click="goHome"></i>
       </div>
 
       <div class="row">
-        <label>Email</label>
+        <label>{{ t("RegisterView.email")}}</label>
         <input v-model="email" type="email" class="input" placeholder="Enter your email" required />
       </div>
 
       <div class="row">
-        <label>Password</label>
+        <label>{{ t("RegisterView.password")}}</label>
         <input v-model="password" type="password" class="input" placeholder="Create a password" required />
       </div>
 
       <div class="row">
-        <label>Nickname</label>
+        <label>{{ t("RegisterView.nickname")}}</label>
         <input v-model="nickname" type="text" class="input" placeholder="Pick a nickname" required />
       </div>
 
       <div class="row">
-        <label>Bio</label>
+        <label>{{ t("RegisterView.bio")}}</label>
         <textarea v-model="bio" class="textarea" rows="3" placeholder="Write something about yourself..."></textarea>
       </div>
 
-      <button class="big-button" @click="register">Submit</button>
+      <button class="big-button" @click="register">{{ t("RegisterView.submit")}}</button>
 
     </div>
 
@@ -40,6 +40,9 @@ import axios from 'axios'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Dialog from '../components/Dialog.vue'
+
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n();
 
 const router = useRouter()
 
@@ -128,7 +131,6 @@ const goHome = () => {
   border-radius: 5px;
   border: none;
   background-color: var(--color-accent);
-  font-family: 'Source Serif Pro', serif;
   font-size: 16px;
   color: var(--color-text);
 }

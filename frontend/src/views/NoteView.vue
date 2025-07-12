@@ -1,11 +1,11 @@
 <template>
   <div class="mobile-page-base">
     <div class="container">
-      <h2 class="section-title">Note</h2>
+      <h2 class="section-title">{{ t("NoteView.section_title") }}</h2>
 
       <!-- Title -->
       <div class="row">
-        <label>Title</label>
+        <label>{{ t("NoteView.title") }}</label>
         <template v-if="isReadOnly">
           <div class="readonly-field">{{ title }}</div>
         </template>
@@ -20,7 +20,7 @@
       <!-- Mood & Intensity -->
       <div class="row horizontal">
         <div class="field mood">
-          <label>Mood</label>
+          <label>{{ t("NoteView.mood") }}</label>
           <template v-if="isReadOnly">
             <div class="readonly-field">{{ mood || '-' }}</div>
           </template>
@@ -28,7 +28,7 @@
             <select class="input" v-model="mood" :disabled="disableMood"
               :class="{ danger: showError && !disableMood && !mood && focused != 'mood' }" @focus="focused = 'mood'"
               @blur="focused = null">
-              <option value="">Select Mood</option>
+              <option value="">{{ t("NoteView.select_mood") }}</option>
               <option value="joy">😊</option>
               <option value="sad">😢</option>
               <option value="mad">😡</option>
@@ -38,7 +38,7 @@
         </div>
 
         <div class="field intensity">
-          <label>Intensity</label>
+          <label>{{ t("NoteView.intensity") }}</label>
           <template v-if="isReadOnly">
             <div class="readonly-field">{{ intensity || '-' }}</div>
           </template>
@@ -46,9 +46,9 @@
             <select class="input" v-model="intensity" :disabled="disableMood"
               :class="{ danger: showError && !disableMood && !intensity && focused != 'intensity' }"
               @focus="focused = 'intensity'" @blur="focused = null">
-              <option value="1">Low</option>
-              <option value="2">Moderate</option>
-              <option value="3">High</option>
+              <option value="1">{{ t("NoteView.low") }}</option>
+              <option value="2">{{ t("NoteView.medium") }}</option>
+              <option value="3">{{ t("NoteView.high") }}</option>
             </select>
           </template>
         </div>
@@ -58,12 +58,12 @@
       <!-- Checkbox: No Mood -->
       <div class="row horizontal">
         <input type="checkbox" id="disableMood" v-model="disableMood" />
-        <label for="disableMood">No Mood</label>
+        <label for="disableMood">{{ t("NoteView.no_mood") }}</label>
       </div>
 
       <!-- Datetime -->
       <div class="row">
-        <label>Datetime</label>
+        <label>{{ t("NoteView.datetime") }}</label>
         <template v-if="isReadOnly">
           <div class="readonly-field">{{ occurredAt }}</div>
         </template>
@@ -78,12 +78,12 @@
       <!-- Location + Search -->
       <div class="row horizontal">
         <div class="field location">
-          <label>Location</label>
+          <label>{{ t("NoteView.location") }}</label>
           <template v-if="isReadOnly">
             <div class="readonly-field">{{ locationQuery }}</div>
           </template>
           <template v-else>
-            <input v-model="locationQuery" type="text" class="input" placeholder="Enter a place name"
+            <input v-model="locationQuery" type="text" class="input" :placeholder="t('NoteView.location_placeholder')"
               :disabled="disableCoords"
               :class="{ danger: showError && !disableCoords && !locationQuery && focused != 'location' }"
               @focus="focused = 'location'" @blur="focused = null" />
@@ -93,24 +93,24 @@
         <button class="geo-button" @click="useCurrentLocation" :disabled="disableCoords || isReadOnly">
           <i class="fas fa-crosshairs"></i>
         </button>
-        <button class="search-button" @click="searchLocation" :disabled="disableCoords || isReadOnly">Search</button>
+        <button class="search-button" @click="searchLocation" :disabled="disableCoords || isReadOnly">{{ t("NoteView.search_location") }}</button>
       </div>
 
 
       <!-- Checkbox: Include coordinates -->
       <div class="row horizontal" style="align-items: center;">
         <input type="checkbox" id="disableCoords" v-model="disableCoords" />
-        <label for="disableCoords">Don't save coordinates</label>
+        <label for="disableCoords">{{ t("NoteView.no_location") }}</label>
       </div>
 
       <!-- Description -->
       <div class="row">
-        <label>Description</label>
+        <label>{{ t("NoteView.description") }}</label>
         <template v-if="isReadOnly">
           <div class="readonly-field" style="white-space: pre-wrap;">{{ description }}</div>
         </template>
         <template v-else>
-          <textarea class="textarea" rows="4" placeholder="Write something..." v-model="description"
+          <textarea class="textarea" rows="4" :placeholder="t('NoteView.description_placeholder')" v-model="description"
             :class="{ danger: showError && !description && focused != 'description' }" @focus="focused = 'description'"
             @blur="focused = null"></textarea>
         </template>
@@ -121,7 +121,7 @@
       <!-- Editable 狀態才顯示上傳欄位 -->
       <template v-if="!isReadOnly">
         <div class="row">
-          <label>Image</label>
+          <label>{{ t("NoteView.image") }}</label>
           <input type="file" @change="handleFileUpload" accept="image/*" />
           <div v-if="imageUrl" class="preview">
             <img :src="imageUrl" alt="Preview" style="max-width: 100%;" />
@@ -132,14 +132,14 @@
       <!-- Read-only 模式顯示圖片預覽 -->
       <template v-if="isReadOnly && imageUrl">
         <div class="row">
-          <label>Image</label>
+          <label>{{ t("NoteView.image") }}</label>
           <img :src="imageUrl" alt="Note Image" class="readonly-image" style="max-width: 100%; " />
         </div>
       </template>
 
       <!-- Map -->
       <div class="row">
-        <label>Map</label>
+        <label>{{ t("NoteView.map") }}</label>
         <div class="small-map-wrapper">
           <NoteMapView :lat="mapLat" :lng="mapLng" :enableClick="!isReadOnly" @mapClick="handleMapClick" />
         </div>
@@ -149,7 +149,7 @@
       <div class="row" v-if="isEditing">
         <!-- Cancel only in edit mode -->
         <button class="big-button cancel-button" @click="cancelEdit">
-          Cancel
+          {{ t("NoteView.cancel") }}
         </button>
       </div>
       <!-- Save, Edit 按鈕 -->
@@ -158,19 +158,19 @@
 
         <!-- Save only in non-readonly -->
         <button v-if="!isReadOnly" class="big-button" @click="validateAndPrompt">
-          Save
+          {{ t("NoteView.save") }}
         </button>
 
         <!-- Edit only in readonly -->
         <button v-if="isReadOnly" class="big-button" @click="goToEditPage">
-          Edit
+          {{ t("NoteView.edit") }}
         </button>
       </div>
 
       <div class="row" v-if="isReadOnly">
 
         <button class="big-button delete-button" @click="promptDelete">
-          Delete
+          {{ t("NoteView.delete") }}
         </button>
       </div>
 
@@ -197,12 +197,17 @@ import TabBar from '../components/TabBar.vue';
 import NoteMapView from '../components/NoteMapView.vue';
 
 import Dialog from '../components/Dialog.vue';
-import { useRouter } from 'vue-router';
+import { useRouter,useRoute } from 'vue-router';
+
+import axios from 'axios';
+
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const router = useRouter();
-import { useRoute } from 'vue-router';
-import axios from 'axios';
 const route = useRoute();
+
+
 // const uuid = route.params.uuid as string | undefined
 const isReadOnly = ref(false)
 const isEditing = ref(false)
@@ -303,7 +308,7 @@ async function useCurrentLocation() {
     (err) => {
       console.error("Geolocation failed", err);
       showDialog.value = true;
-      dialogMessage.value = 'Cannot get current location. Please enter coordinates manually, or check your browser settings.';
+      dialogMessage.value = t("NoteView.location_fallback");
     }
   );
 
@@ -366,7 +371,7 @@ async function searchLocation() {
     } else {
       // alert('Location not found');
       showDialog.value = true;
-      dialogMessage.value = 'Location not found. Please try another search term.';
+      dialogMessage.value = t("NoteView.location_not_found");
     }
   } catch (error) {
     console.error('search error', error);
@@ -382,21 +387,21 @@ const confirmingSave = ref(false);
 function validateAndPrompt() {
   showError.value = false;
   let missing = [];
-  if (!title.value) missing.push('Title');
-  if (!disableMood.value && !mood.value) missing.push('Mood');
-  if (!disableMood.value && !intensity.value) missing.push('Intensity');
-  if (!occurredAt.value) missing.push('Datetime');
-  if (!disableCoords.value && !locationQuery.value) missing.push('Location');
-  if (!description.value) missing.push('Description');
+  if (!title.value) missing.push(t("NoteView.title"));
+  if (!disableMood.value && !mood.value) missing.push(t("NoteView.mood"));
+  if (!disableMood.value && !intensity.value) missing.push(t("NoteView.intensity"));
+  if (!occurredAt.value) missing.push(t("NoteView.datetime"));
+  if (!disableCoords.value && !locationQuery.value) missing.push(t("NoteView.location"));
+  if (!description.value) missing.push(t("NoteView.description"));
 
   if (missing.length > 0) {
     showError.value = true;
-    dialogMessage.value = 'Missing: \n' + missing.join(', ');
+    dialogMessage.value = `${t("NoteView.missing")} \n` + missing.join(', ');
     confirmingSave.value = false;
     showDialog.value = true;
   } else {
-    dialogMessage.value = `Save this note ${disableCoords.value || disableMood.value ? 'without:' : ''} ${(disableCoords.value ? 'Location, ' : '') +
-      (disableMood.value ? 'Mood, Intensity' : '')
+    dialogMessage.value = `${t("NoteView.save_prompt")} ${disableCoords.value || disableMood.value ? t("NoteView.save_without") : ''} ${(disableCoords.value ? t("NoteView.location") : '') +
+      (disableMood.value ? `${t("NoteView.mood")}, ${t("NoteView.intensity")}` : '')
       }?`;
     confirmingSave.value = true;
     showDialog.value = true;
@@ -469,7 +474,7 @@ const saveNote = async () => {
     }
 
     // const result = await res.json()
-    dialogMessage.value = isEditing.value ? 'Note updated!' : 'Note saved successfully!'
+    dialogMessage.value = isEditing.value ? t("NoteView.note_update_success") : t("NoteView.note_create_success")
     showDialog.value = true
 
     setTimeout(() => {
@@ -481,7 +486,7 @@ const saveNote = async () => {
     }, 1500)
 
   } catch (err) {
-    dialogMessage.value = `Save failed: ${err instanceof Error ? err.message : 'Unknown error'}`
+    dialogMessage.value = `${t("NoteView.save_fail")}: ${err instanceof Error ? err.message : 'Unknown error'}`
     showDialog.value = true
   } finally {
     saving.value = false
@@ -540,7 +545,7 @@ onMounted(() => {
 
 
 function promptDelete() {
-  dialogMessage.value = 'Are you sure you want to delete this memory?'
+  dialogMessage.value = t("NoteView.delete_prompt")
   confirmingDelete.value = true
   showDialog.value = true
 }
@@ -559,14 +564,14 @@ async function deleteMemory() {
 
     if (!res.ok) throw new Error('Failed to delete')
 
-    dialogMessage.value = 'Memory deleted.'
+    dialogMessage.value = t("NoteView.note_delete_success")
     showDialog.value = true
 
     setTimeout(() => {
       router.push('/home')
     }, 1500)
   } catch (err) {
-    dialogMessage.value = `Delete failed: ${err instanceof Error ? err.message : 'Unknown error'}`
+    dialogMessage.value = `${t("NoteView.delete_fail")} ${err instanceof Error ? err.message : 'Unknown error'}`
     showDialog.value = true
   }
 }
@@ -588,8 +593,8 @@ const handleFileUpload = async (event: Event) => {
   } catch (error) {
     console.error("Image upload failed:", error);
     showDialog.value = true;
-    dialogMessage.value = 'Image upload failed. Please try again later.';
-  }
+    dialogMessage.value = t("NoteView.image_upload_fail");
+  } 
 };
 
 </script>
@@ -623,16 +628,12 @@ input[type="datetime-local"] {
 }
 
 /* === 文字與按鈕 === */
-button {
-  font-family: 'Source Serif Pro', serif;
-}
 
 .input {
   padding: 0.6rem 0.8rem;
   border-radius: 5px;
   border: none;
   background-color: var(--color-accent);
-  font-family: 'Source Serif Pro', serif;
   font-size: 16px;
   color: var(--color-text);
 }
@@ -645,7 +646,6 @@ button {
   padding: 0.6rem 0.8rem;
   border-radius: 5px;
   background-color: var(--color-accent);
-  font-family: 'Source Serif Pro', serif;
   font-size: 16px;
   resize: none;
   border: none;
@@ -676,7 +676,7 @@ button {
 .field {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.5rem;
 }
 
 /* === 欄位比例 === */

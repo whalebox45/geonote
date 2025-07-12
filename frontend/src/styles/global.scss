@@ -83,10 +83,15 @@ a {
     border-radius: 8px;
     font-size: 16px;
     cursor: pointer;
-    font-family: 'Source Serif Pro', serif;
-  
     &:hover {
       opacity: 0.9;
     }
+  }
+}
+
+body {
+  font-family: 'Source Serif Pro','Noto Serif JP', serif;
+  button, input, textarea,select,option {
+    font-family: 'Source Serif Pro','Noto Serif JP', serif;
   }
 }

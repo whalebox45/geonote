@@ -3,10 +3,10 @@
     "section_title": "Home",
     "recent": "Recent Memories",
     "empty": "No memories yet",
-    "see_all": "See all memories",
+    "see_all": "See all memories"
   },
   "LoginView": {
-    "section_title": "Sign Up",
+    "register": "Sign Up",
     "login": "Login",
     "invalid_credentials": "Invalid username or password",
     "login_error": "Login error, please try again"
@@ -23,9 +23,11 @@
     "no_mood": "No Mood",
     "datetime": "Date and Time",
     "location": "Location",
+    "location_placeholder": "Enter a place name or coordinates",
     "search_location": "Search",
     "no_location": "Don't save coordinates",
     "description": "Description",
+    "description_placeholder": "Write something...",
     "image": "Image",
     "map": "Map",
     "cancel": "Cancel",
@@ -66,5 +68,14 @@
   "StoryBookView": {
     "section_title": "All Notes",
     "empty": "No notes yet"
+  },
+  "unit": {
+    "year": "year | years",
+    "month": "month | months",
+    "week": "week | weeks",
+    "day": "day | days"
+  },
+  "preposition": {
+    "ago": "ago"
   }
 }

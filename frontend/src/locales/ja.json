@@ -6,7 +6,7 @@
       "see_all": "すべてのメモリーを見る"
     },
     "LoginView": {
-      "section_title": "サインアップ",
+      "register": "サインアップ",
       "login": "ログイン",
       "invalid_credentials": "ユーザー名またはパスワードが無効です",
       "login_error": "ログインエラー、もう一度お試しください"
@@ -19,13 +19,15 @@
       "intensity": "強さ",
       "low": "弱い",
       "medium": "普通",
-      "high": "強い",
+      "high": "強い", 
       "no_mood": "気分なし",
       "datetime": "日時",
       "location": "位置情報",
+      "location_placeholder": "場所名または座標を入力",
       "search_location": "検索",
       "no_location": "位置情報を保存しない",
       "description": "説明",
+      "description_placeholder": "説明を入力してください",
       "image": "画像",
       "map": "地図",
       "cancel": "キャンセル",
@@ -66,6 +68,15 @@
     "StoryBookView": {
       "section_title": "すべてのノート",
       "empty": "ノートがまだありません"
+    },
+    "unit": {
+      "year": "年 | 年",
+      "month": "月 | 月",
+      "week": "週 | 週間",
+      "day": "日 | 日"
+    },
+    "preposition": {
+      "ago": "前"
     }
   }
   

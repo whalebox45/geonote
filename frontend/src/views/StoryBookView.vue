@@ -1,7 +1,7 @@
 <template>
     <div class="mobile-page-base">
       <div class="container">
-        <h2 class="section-title">All Memories</h2>
+        <h2 class="section-title">{{ t("StoryBookView.section_title") }}</h2>
   
         <div class="memory-list">
           <template v-if="memories.length > 0">
@@ -18,7 +18,7 @@
             </div>
           </template>
           <div v-else class="memory-placeholder">
-            No memories found.
+            {{ t("StoryBookView.empty") }}
           </div>
         </div>
   
@@ -40,6 +40,9 @@
   import axios from 'axios'
   import TabBar from '../components/TabBar.vue'
   
+  import { useI18n } from 'vue-i18n'
+  const { t } = useI18n()
+
   interface Memory {
     uuid: string
     title: string

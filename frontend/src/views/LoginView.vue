@@ -14,12 +14,12 @@
 
                 <button class="register-button" @click="goToRegister">
                     <i class="fas fa-user-plus"></i>
-                    Sign Up
+                    {{ t("LoginView.register") }}
                 </button>
 
                 <button class="login-button" @click="login">
                     <i class="fas fa-sign-in-alt"></i>
-                    Login
+                    {{ t("LoginView.login") }}
                 </button>
             </div>
         </div>
@@ -36,6 +36,9 @@ import { useRouter } from 'vue-router';
 
 
 import Dialog from '../components/Dialog.vue';
+
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 
 const router = useRouter();
 
@@ -75,9 +78,9 @@ const login = async () => {
         }
     } catch (err: any) {
         if (err.response?.status === 401) {
-            dialogMessage.value = 'Invalid username or password.';
+            dialogMessage.value = t("LoginView.invalid_credentials");
         } else {
-            dialogMessage.value = 'Login error. Please try again later.';
+            dialogMessage.value = t("LoginView.login_error");
         }
         showDialog.value = true;
     }
@@ -140,7 +143,6 @@ function goToRegister() {
         border: none;
         border-radius: 5px;
         cursor: pointer;
-        font-family: 'Source Serif Pro', serif;
     }
 
     button:hover {
@@ -191,7 +193,6 @@ function goToRegister() {
     border-radius: 5px;
     background-color: var(--color-accent);
     color: var(--color-text);
-    font-family: 'Source Serif Pro', serif;
 }
 
 .input:focus {
