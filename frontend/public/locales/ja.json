@@ -32,8 +32,8 @@
       "save": "保存",
       "edit": "編集",
       "delete": "削除",
-      "location_fallback": "現在地を取得できません。手動で入力するか、ブラウザの設定をご確認ください。",
-      "location_not_found": "位置情報が見つかりません。別のキーワードでお試しください。",
+      "location_fallback": "現在地を取得できませんので、手動で入力するか、ブラウザの設定をご確認ください",
+      "location_not_found": "位置情報が見つかりませんので、別のキーワードでお試しください",
       "missing": "必須項目が未入力です",
       "save_prompt": "このノートを保存しますか？",
       "save_without": "次の項目なしで保存：",
@@ -44,7 +44,7 @@
       "delete_prompt": "このノートを削除してもよろしいですか？",
       "delete_success": "ノートが削除されました",
       "delete_fail": "ノートの削除に失敗しました",
-      "image_upload_error": "画像のアップロードに失敗しました。後でもう一度お試しください。"
+      "image_upload_error": "画像のアップロードに失敗しましたので、後でもう一度お試しください"
     },
     "RegisterView": {
       "section_title": "登録",
