@@ -126,9 +126,6 @@ function logout() {
 .readonly-field {
   font-size: 16px;
   color: #555;
-  // background-color: #f1f1f1;
-  // padding: 0.4rem 0.6rem;
-  // border-radius: 5px;
 }
 
 .input,

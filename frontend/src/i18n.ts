@@ -1,7 +1,7 @@
 import { createI18n } from 'vue-i18n';
 import en from './locales/en.json';
 import ja from './locales/ja.json';
-
+import zh_tw from './locales/zh-tw.json';
 const savedLocale = localStorage.getItem('locale') || 'en';
 
 
@@ -11,7 +11,8 @@ const i18n = createI18n({
   fallbackLocale: 'en',
   messages: {
     en,
-    ja
+    ja,
+    'zh-tw': zh_tw
   }
 });
 

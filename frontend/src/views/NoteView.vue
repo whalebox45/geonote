@@ -710,7 +710,7 @@ input[type="datetime-local"] {
   align-self: flex-end;
   padding: 0.6rem 16px;
   background-color: var(--color-primary);
-  color: white;
+  color: var(--color-accent);
   font-size: 16px;
   border: none;
   border-radius: 5px;

@@ -140,12 +140,4 @@ const goHome = () => {
   outline: 2px solid var(--color-primary);
 }
 
-
-.error-message {
-  color: red;
-}
-
-.success-message {
-  color: green;
-}
 </style>

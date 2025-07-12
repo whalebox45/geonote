@@ -25,9 +25,7 @@ a {
   &:hover {
     color: var(--color-secondary);
   }
-  &:visited {
-    color: var(--color-purple);
-  }
+
 }
 
 /* 變數定義 */
@@ -44,6 +42,37 @@ a {
   --color-info: #33b5e5;
   --color-success: #00c851;
   --color-purple: #aa66cc;
+
+  // --color-bg: #1a1a1a;
+  // --color-primary: #333344;
+  // --color-secondary: #555566;
+  // --color-accent: #444444;
+  // --color-text: #f1f1f1;
+  // --color-disabled-bg: #555;
+  // --color-disabled: #777;
+  // --color-danger: #ff7777;
+  // --color-warning: #ffcc66;
+  // --color-info: #66d9ef;
+  // --color-success: #33cc99;
+  // --color-purple: #bb88dd;
+
+
+
+}
+
+html.dark {
+  --color-bg: #1a1a1a;
+  --color-primary: #333344;
+  --color-secondary: #555566;
+  --color-accent: #444444;
+  --color-text: #f1f1f1;
+  --color-disabled-bg: #555;
+  --color-disabled: #777;
+  --color-danger: #ff7777;
+  --color-warning: #ffcc66;
+  --color-info: #66d9ef;
+  --color-success: #33cc99;
+  --color-purple: #bb88dd;
 }
 
 .section-title {

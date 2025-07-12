@@ -11,5 +11,9 @@ import i18n from './i18n';
 
 setupLeafletIcons();
 
+const savedTheme = localStorage.getItem('theme') ?? 'light';
+document.documentElement.classList.toggle('dark', savedTheme === 'dark');
+
+
 createApp(App).use(router).use(OpenLayersMap).use(i18n).mount('#app');
 

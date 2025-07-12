@@ -126,12 +126,12 @@
   
   .memory-time {
     font-size: 0.875rem;
-    color: #666;
+    color: var(--color-secondary);
   }
   
   .memory-desc {
   font-size: 1rem;
-  color: #333;
+  color: var(--color-text);
   white-space: pre-wrap;
   line-height: 1.5rem;
   min-height: 7.5rem; /* 1.5 * 5 行 */
@@ -140,7 +140,7 @@
   
   .memory-placeholder {
     text-align: center;
-    color: #999;
+    color: var(--color-secondary);
     font-style: italic;
     padding: 16px;
   }
@@ -162,14 +162,14 @@
     color: var(--color-primary);
   
     &:disabled {
-      color: #ccc;
+      color: var(--color-disabled);
       cursor: default;
     }
   }
   
   .page-info {
     font-size: 14px;
-    color: #666;
+    color: var(--color-primary);
   }
   </style>
   

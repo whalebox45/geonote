@@ -3,10 +3,10 @@
     <button @click="go('/home')" :class="{ active: isActive('/home') }">
       <i class="fas fa-home"></i>
     </button>
-    <button @click="go('/storybook')" :class="{ active: isActive('/home') }">
+    <button @click="go('/storybook')" :class="{ active: isActive('/storybook') }">
       <i class="fas fa-book"></i>
     </button>
-    <button @click="go('/note/new')" :class="{ active: isActive('/note') }">
+    <button @click="go('/note/new')" :class="{ active: isStartingWith('/note/') }">
       <i class="fas fa-pen"></i>
     </button>
     <button @click="go('/chat')" :class="{ active: isActive('/chat') }">
@@ -31,6 +31,7 @@ const go = (path: string) => {
 };
 
 const isActive = (path: string) => route.path === path;
+const isStartingWith = (path: string) => route.path.startsWith(path);
 </script>
 
 <style scoped lang="scss">
