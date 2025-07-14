@@ -9,7 +9,8 @@
       "register": "サインアップ",
       "login": "ログイン",
       "invalid_credentials": "ユーザー名またはパスワードが無効です",
-      "login_error": "ログインエラー、もう一度お試しください"
+      "login_error": "ログインエラー、もう一度お試しください",
+      "language": "言語"
     },
     "NoteView": {
       "section_title": "ノート",
@@ -61,6 +62,13 @@
       "email": "メールアドレス",
       "nickname": "ニックネーム",
       "bio": "自己紹介",
+      "language": "言語",
+      "theme": {
+        "title": "テーマ",
+        "light": "ライト",
+        "dark": "ダーク",
+        "system": "システムデフォルト"
+      },
       "change_password": "パスワードを変更",
       "save": "保存",
       "logout": "ログアウト"
@@ -69,6 +77,7 @@
       "section_title": "すべてのノート",
       "empty": "ノートがまだありません"
     },
+    "language_name": "日本語",
     "unit": {
       "year": "年 | 年",
       "month": "月 | 月",

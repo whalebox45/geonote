@@ -9,7 +9,8 @@
     "register": "Sign Up",
     "login": "Login",
     "invalid_credentials": "Invalid username or password",
-    "login_error": "Login error, please try again"
+    "login_error": "Login error, please try again",
+    "language": "Language"
   },
   "NoteView": {
     "section_title": "Note",
@@ -61,6 +62,13 @@
     "email": "Email",
     "nickname": "Nickname",
     "bio": "Bio",
+    "language": "Language",
+    "theme": {
+      "title": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System Default"
+    },
     "change_password": "Change Password",
     "save": "Save",
     "logout": "Logout"
@@ -69,6 +77,7 @@
     "section_title": "All Notes",
     "empty": "No notes yet"
   },
+  "language_name": "English",
   "unit": {
     "year": "year | years",
     "month": "month | months",

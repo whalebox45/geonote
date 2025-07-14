@@ -5,18 +5,31 @@
 
       <div class="form">
         <div class="row">
-          <label>{{  t("SettingsView.email")  }}</label>
+          <label>{{ t("SettingsView.email") }}</label>
           <div class="readonly-field">{{ email }}</div>
         </div>
 
         <div class="row">
-          <label>{{  t("SettingsView.nickname")  }}</label>
+          <label>{{ t("SettingsView.nickname") }}</label>
           <input class="input" type="text" v-model="nickname" placeholder="Your nickname" />
         </div>
 
         <div class="row">
-          <label>{{  t("SettingsView.bio")  }}</label>
+          <label>{{ t("SettingsView.bio") }}</label>
           <textarea class="textarea" v-model="bio" placeholder="Write something about yourself..."></textarea>
+        </div>
+
+        <div class="row-inline">
+          <label><i class="fas fa-globe"></i> {{ t("SettingsView.language") }}</label>
+          <button class="open-button"  @click="onShowI18NDialog">{{ t("language_name") }} &nbsp;&nbsp; <i class="fas fa-gear"></i></button>
+        </div>
+
+        <div class="row-inline">
+          <label><i class="fas fa-palette"></i> {{ t("SettingsView.theme.title") }}</label>
+          <select v-model="selectedTheme" class="input">
+            <option value="light">{{ t("SettingsView.theme.light") }}</option>
+            <option value="dark">{{ t("SettingsView.theme.dark") }}</option>
+          </select>
         </div>
 
         <!-- <div class="row">
@@ -28,12 +41,27 @@
           <img :src="avatarUrl" alt="avatar" />
         </div> -->
 
-        <button class="big-button" @click="saveProfile">{{  t("SettingsView.save")  }}</button>
-        <button class="big-button logout-button" @click="logout">{{  t("SettingsView.logout")  }}</button>
+        <button class="big-button" @click="saveProfile">{{ t("SettingsView.save") }}</button>
+        <button class="big-button logout-button" @click="logout">{{ t("SettingsView.logout") }}</button>
       </div>
     </div>
 
     <div style="height: 50px;"></div>
+    
+    <SlotDialog id="language-dialog" :showCancel="true" :visible="showI18NDialog" @confirm="onLocaleChange"
+            @cancel="showI18NDialog = false">
+            <template #title>
+                <h3>{{ t("LoginView.language") }}</h3>
+            </template>
+            <div class="language-container">
+                <select v-model="selectedLocale" class="input">
+                    <option v-for="lang in langList" :key="lang.code" :value="lang.code">
+                        {{ lang.name }}
+                    </option>
+                </select>
+            </div>
+        </SlotDialog>
+    
     <TabBar />
   </div>
 </template>
@@ -44,7 +72,9 @@ import { useRouter } from 'vue-router'
 import TabBar from '../components/TabBar.vue'
 
 import { useI18n } from 'vue-i18n'
-const { t } = useI18n();
+import SlotDialog from '../components/SlotDialog.vue';
+
+const { t, locale } = useI18n();
 
 const router = useRouter()
 const API_URL = import.meta.env.VITE_API_URL
@@ -54,6 +84,20 @@ const nickname = ref('')
 const bio = ref('')
 const avatarUrl = ref('')
 const uuid = ref('')
+
+
+
+const showI18NDialog = ref(false);
+
+const selectedLocale = ref('en');
+
+const langList = [
+    { code: 'en', name: 'English' },
+    { code: 'zh-tw', name: '繁體中文' },
+    { code: 'ja', name: '日本語' }
+];
+
+const selectedTheme = ref(localStorage.getItem('theme') || 'light');
 
 onMounted(async () => {
   const token = localStorage.getItem('token')
@@ -80,6 +124,10 @@ onMounted(async () => {
 })
 
 async function saveProfile() {
+
+  const theme = selectedTheme.value;
+  localStorage.setItem('theme', theme);
+
   const token = localStorage.getItem('token')
   try {
     const res = await fetch(`${API_URL}/users/${uuid.value}`, {
@@ -96,6 +144,7 @@ async function saveProfile() {
     })
     if (!res.ok) throw new Error('Update failed')
     alert('Profile updated!')
+    location.reload();
   } catch (err) {
     console.error(err)
     alert('Update failed.')
@@ -106,11 +155,32 @@ function logout() {
   localStorage.removeItem('token')
   router.push('/')
 }
+
+function onShowI18NDialog() {
+    const savedLocale = localStorage.getItem('locale');
+    selectedLocale.value = langList.some(lang => lang.code === savedLocale) ? savedLocale || 'en' : 'en';
+    showI18NDialog.value = true;
+}
+
+function onLocaleChange() {
+    if (selectedLocale.value) {
+        // 更新 i18n 的 locale
+        locale.value = selectedLocale.value;
+
+        // 儲存選擇的語言到 localStorage
+        localStorage.setItem('locale', selectedLocale.value);
+
+        showI18NDialog.value = false; // 關閉對話框
+    }
+}
+
+
+
+
+
 </script>
 
 <style scoped lang="scss">
-
-
 .form {
   display: flex;
   flex-direction: column;
@@ -121,6 +191,13 @@ function logout() {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
+}
+
+.row-inline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
 }
 
 .readonly-field {
@@ -158,5 +235,20 @@ function logout() {
 
 .logout-button {
   background-color: var(--color-danger) !important;
-  }
+}
+
+
+.open-button {
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  font-size: 16px;
+  background-color: var(--color-primary);
+  color: var(--color-accent);
+  gap: 0.3rem;
+}
 </style>

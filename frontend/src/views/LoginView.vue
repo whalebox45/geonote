@@ -22,8 +22,29 @@
                     {{ t("LoginView.login") }}
                 </button>
             </div>
+
+            <div class="bottom-container">
+                <button class="i18n-button" @click="onShowI18NDialog">
+                    <!-- {{ t("LoginView.language") }} -->
+                    <i class="fas fa-globe"></i>
+                </button>
+            </div>
         </div>
         <Dialog :visible="showDialog" :message="dialogMessage" @confirm="showDialog = false" />
+
+        <SlotDialog id="language-dialog" :showCancel="true" :visible="showI18NDialog" @confirm="onLocaleChange"
+            @cancel="showI18NDialog = false">
+            <template #title>
+                <h3>{{ t("LoginView.language") }}</h3>
+            </template>
+            <div class="language-container">
+                <select v-model="selectedLocale" class="input">
+                    <option v-for="lang in langList" :key="lang.code" :value="lang.code">
+                        {{ lang.name }}
+                    </option>
+                </select>
+            </div>
+        </SlotDialog>
     </div>
 
 
@@ -38,7 +59,8 @@ import { useRouter } from 'vue-router';
 import Dialog from '../components/Dialog.vue';
 
 import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
+import SlotDialog from '../components/SlotDialog.vue';
+const { t, locale } = useI18n();
 
 const router = useRouter();
 
@@ -50,6 +72,15 @@ const password = ref('');
 const showDialog = ref(false);
 const dialogMessage = ref('');
 
+const showI18NDialog = ref(false);
+
+const selectedLocale = ref('en');
+
+const langList = [
+    { code: 'en', name: 'English' },
+    { code: 'zh-tw', name: '繁體中文' },
+    { code: 'ja', name: '日本語' }
+];
 
 onMounted(() => {
     const token = localStorage.getItem('token')
@@ -94,7 +125,23 @@ function goToRegister() {
     router.push('/register');
 }
 
+function onShowI18NDialog() {
+    const savedLocale = localStorage.getItem('locale');
+    selectedLocale.value = langList.some(lang => lang.code === savedLocale) ? savedLocale || 'en' : 'en';
+    showI18NDialog.value = true;
+}
 
+function onLocaleChange() {
+    if (selectedLocale.value) {
+        // 更新 i18n 的 locale
+        locale.value = selectedLocale.value;
+
+        // 儲存選擇的語言到 localStorage
+        localStorage.setItem('locale', selectedLocale.value);
+
+        showI18NDialog.value = false; // 關閉對話框
+    }
+}
 </script>
 
 <style scoped lang="scss">
@@ -197,5 +244,32 @@ function goToRegister() {
 
 .input:focus {
     outline: 2px solid var(--color-primary);
+}
+
+.bottom-container {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 0.5rem; // optional, for spacing
+
+}
+
+.i18n-button {
+    background-color: var(--color-primary);
+    border: none;
+    border-radius: 5px;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--color-accent);
+    font-size: 1rem;
+}
+
+.input {
+    padding: 0.6rem 0.8rem;
+    border-radius: 5px;
+    border: none;
+    background-color: var(--color-accent);
+    font-size: 16px;
+    color: var(--color-text);
 }
 </style>
