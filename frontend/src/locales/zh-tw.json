@@ -70,6 +70,8 @@
       "system": "系統預設"
     },
     "change_password": "更改密碼",
+    "update_success": "個人資料已更新",
+    "update_error": "個人資料更新失敗",
     "save": "儲存",
     "logout": "登出"
   },

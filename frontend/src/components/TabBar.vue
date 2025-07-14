@@ -52,7 +52,7 @@ button {
   background: none;
   border: none;
   font-size: 16px;
-  color: var(--color-bg);
+  color: var(--color-accent);
   cursor: pointer;
 }
 

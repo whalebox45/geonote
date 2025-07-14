@@ -635,7 +635,7 @@ input[type="datetime-local"] {
   border: none;
   background-color: var(--color-accent);
   font-size: 16px;
-  color: var(--color-text);
+  color: var(--color-accent-dark);
 }
 
 .input:focus {

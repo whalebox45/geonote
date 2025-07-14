@@ -32,8 +32,10 @@ a {
 :root {
   --color-bg: #ccddcc;
   --color-primary: #557777;
-  --color-secondary: #889988;
+  --color-secondary: #eeeedd;
   --color-accent: #eeeedd;
+  --color-accent-dark: #333333;
+
   --color-text: #111111;
   --color-disabled-bg: #888888;
   --color-disabled: #aaaaaa;
@@ -62,9 +64,10 @@ a {
 
 html.dark {
   --color-bg: #1a1a1a;
-  --color-primary: #333344;
+  --color-primary: #779999;
   --color-secondary: #555566;
-  --color-accent: #444444;
+  --color-accent: #eeeedd;
+  --color-accent-dark: #333333;
   --color-text: #f1f1f1;
   --color-disabled-bg: #555;
   --color-disabled: #777;

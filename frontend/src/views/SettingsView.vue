@@ -62,6 +62,9 @@
             </div>
         </SlotDialog>
     
+        <Dialog :visible="showDialog" :message="dialogMessage" @confirm="showDialog = false" />
+
+
     <TabBar />
   </div>
 </template>
@@ -73,6 +76,7 @@ import TabBar from '../components/TabBar.vue'
 
 import { useI18n } from 'vue-i18n'
 import SlotDialog from '../components/SlotDialog.vue';
+import Dialog from '../components/Dialog.vue';
 
 const { t, locale } = useI18n();
 
@@ -85,6 +89,8 @@ const bio = ref('')
 const avatarUrl = ref('')
 const uuid = ref('')
 
+const showDialog = ref(false);
+const dialogMessage = ref('');
 
 
 const showI18NDialog = ref(false);
@@ -143,11 +149,23 @@ async function saveProfile() {
       })
     })
     if (!res.ok) throw new Error('Update failed')
-    alert('Profile updated!')
-    location.reload();
+
+
+    dialogMessage.value = t("SettingsView.update_success");
+    showDialog.value = true;
+    // alert('Profile updated!')
+
+    
+    setTimeout(() => {
+      showDialog.value = false;
+      location.reload();
+    }, 1500);
   } catch (err) {
     console.error(err)
     alert('Update failed.')
+
+    dialogMessage.value = t("SettingsView.update_error");
+    showDialog.value = true;
   }
 }
 
@@ -211,7 +229,7 @@ function onLocaleChange() {
   font-size: 16px;
   border: none;
   border-radius: 5px;
-  background-color: var(--color-accent);
+  background-color: var(--color-secondary);
   color: var(--color-text);
   font-family: 'Source Serif Pro', serif;
 }

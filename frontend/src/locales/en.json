@@ -69,6 +69,8 @@
       "dark": "Dark",
       "system": "System Default"
     },
+    "update_success": "Profile updated successfully",
+    "update_error": "Failed to update profile",
     "change_password": "Change Password",
     "save": "Save",
     "logout": "Logout"

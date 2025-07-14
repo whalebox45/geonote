@@ -69,6 +69,8 @@
         "dark": "ダーク",
         "system": "システムデフォルト"
       },
+      "update_success": "プロフィールが更新されました",
+      "update_error": "プロフィールの更新に失敗しました",
       "change_password": "パスワードを変更",
       "save": "保存",
       "logout": "ログアウト"

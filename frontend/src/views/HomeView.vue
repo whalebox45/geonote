@@ -168,7 +168,7 @@ onMounted(getRecent10Memories);
 
 .time {
   font-size: 0.75rem;
-  
+  color: var(--color-accent-dark)
 }
 
 </style>
