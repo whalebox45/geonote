@@ -239,7 +239,8 @@ function onLocaleChange() {
     border: none;
     border-radius: 5px;
     background-color: var(--color-accent);
-    color: var(--color-text);
+    color: var(--color-accent-dark);
+
 }
 
 .input:focus {
@@ -264,12 +265,4 @@ function onLocaleChange() {
     font-size: 1rem;
 }
 
-.input {
-    padding: 0.6rem 0.8rem;
-    border-radius: 5px;
-    border: none;
-    background-color: var(--color-accent);
-    font-size: 16px;
-    color: var(--color-text);
-}
 </style>
