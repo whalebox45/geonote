@@ -220,23 +220,10 @@ function onLocaleChange() {
 
 .readonly-field {
   font-size: 16px;
-  color: #555;
-}
-
-.input,
-.textarea {
-  padding: 0.6rem 0.8rem;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  background-color: var(--color-secondary);
   color: var(--color-text);
-  font-family: 'Source Serif Pro', serif;
 }
 
-.textarea {
-  resize: none;
-}
+
 
 .avatar-preview {
   display: flex;

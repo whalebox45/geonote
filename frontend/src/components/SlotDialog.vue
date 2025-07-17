@@ -108,11 +108,11 @@ function onCancel() {
 
 .dialog-button.confirm {
   background-color: var(--color-primary);
-  color: white;
+  color: var(--color-btn-text);
 }
 
 .dialog-button.cancel {
   background-color: var(--color-accent);
-  color: var(--color-text);
+  color: var(--color-accent-dark);
 }
 </style>

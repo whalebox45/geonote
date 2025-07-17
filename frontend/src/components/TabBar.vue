@@ -40,7 +40,7 @@ const isStartingWith = (path: string) => route.path.startsWith(path);
   bottom: 0;
   width: 100%;
   height: 3.2rem;
-  background-color: var(--color-primary);
+  background-color: var(--color-nav-bg);
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -52,11 +52,11 @@ button {
   background: none;
   border: none;
   font-size: 16px;
-  color: var(--color-accent);
+  color: var(--color-nav-text);
   cursor: pointer;
 }
 
 button.active {
-  color: var(--color-accent);
+  color: var(--color-nav-text-active);
 }
 </style>

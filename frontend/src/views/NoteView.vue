@@ -56,10 +56,11 @@
 
 
       <!-- Checkbox: No Mood -->
-      <div class="row horizontal">
-        <input type="checkbox" id="disableMood" v-model="disableMood" />
-        <label for="disableMood">{{ t("NoteView.no_mood") }}</label>
-      </div>
+       
+      <div class="row horizontal" v-if="!isReadOnly">
+           <input type="checkbox" id="disableMood" v-model="disableMood" />
+           <label for="disableMood">{{ t("NoteView.no_mood") }}</label>
+        </div>
 
       <!-- Datetime -->
       <div class="row">
@@ -98,7 +99,7 @@
 
 
       <!-- Checkbox: Include coordinates -->
-      <div class="row horizontal" style="align-items: center;">
+      <div class="row horizontal" v-if="!isReadOnly">
         <input type="checkbox" id="disableCoords" v-model="disableCoords" />
         <label for="disableCoords">{{ t("NoteView.no_location") }}</label>
       </div>
@@ -610,11 +611,10 @@ const handleFileUpload = async (event: Event) => {
   padding: 0.4rem 0;
 }
 
-.input:disabled,
-button:disabled {
+.input:disabled, button:disabled {
   background-color: var(--color-disabled);
   color: var(--color-disabled-bg);
-  cursor: not-allowed;
+  cursor: none;
 }
 
 .input.danger,
@@ -629,27 +629,9 @@ input[type="datetime-local"] {
 
 /* === 文字與按鈕 === */
 
-.input {
-  padding: 0.6rem 0.8rem;
-  border-radius: 5px;
-  border: none;
-  background-color: var(--color-accent);
-  font-size: 16px;
-  color: var(--color-accent-dark);
-}
 
 .input:focus {
   outline: 2px solid var(--color-primary);
-}
-
-.textarea {
-  padding: 0.6rem 0.8rem;
-  border-radius: 5px;
-  background-color: var(--color-accent);
-  font-size: 16px;
-  resize: none;
-  border: none;
-  color: var(--color-text);
 }
 
 /* === 主容器 === */
@@ -710,7 +692,7 @@ input[type="datetime-local"] {
   align-self: flex-end;
   padding: 0.6rem 16px;
   background-color: var(--color-primary);
-  color: var(--color-accent);
+  color: var(--color-btn-text);
   font-size: 16px;
   border: none;
   border-radius: 5px;
@@ -724,8 +706,8 @@ input[type="datetime-local"] {
 .geo-button {
   align-self: flex-end;
   padding: 0.6rem;
-  background-color: var(--color-accent);
-  color: var(--color-text);
+  background-color: var(--color-primary);
+  color: var(--color-btn-text);
   font-size: 16px;
   border: none;
   border-radius: 5px;
@@ -739,12 +721,12 @@ input[type="datetime-local"] {
 
 .cancel-button {
   background-color: var(--color-accent) !important;
-  color: var(--color-text) !important;
+  color: var(--color-btn-text) !important;
 }
 
 .delete-button {
   background-color: var(--color-danger) !important;
-  color: white;
+  color: var(--color-btn-text) !important;
 }
 
 /* === 圖片上傳區塊 === */
