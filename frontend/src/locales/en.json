@@ -8,6 +8,8 @@
   "LoginView": {
     "register": "Sign Up",
     "login": "Login",
+    "username": "Username",
+    "passphrase": "Password",
     "invalid_credentials": "Invalid username or password",
     "login_error": "Login error, please try again",
     "language": "Language"

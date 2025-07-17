@@ -6,8 +6,8 @@
             </div>
 
             <div class="form">
-                <input type="text" placeholder="Username" class="input" v-model="username" />
-                <input type="password" placeholder="Passphrase" class="input" v-model="password" />
+                <input type="text" :placeholder="t('LoginView.username')" class="input" v-model="username" />
+                <input type="password" :placeholder="t('LoginView.passphrase')" class="input" v-model="password" />
             </div>
 
             <div class="btn-group">

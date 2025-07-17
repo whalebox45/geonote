@@ -8,6 +8,8 @@
   "LoginView": {
     "register": "註冊",
     "login": "登入",
+    "username": "使用者名稱",
+    "passphrase": "密碼",
     "invalid_credentials": "帳號或密碼錯誤",
     "login_error": "登入失敗，請再試一次",
     "language": "語言"

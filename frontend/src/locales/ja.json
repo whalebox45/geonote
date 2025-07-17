@@ -8,6 +8,8 @@
     "LoginView": {
       "register": "サインアップ",
       "login": "ログイン",
+      "username": "ユーザー名",
+      "passphrase": "パスワード",
       "invalid_credentials": "ユーザー名またはパスワードが無効です",
       "login_error": "ログインエラー、もう一度お試しください",
       "language": "言語"
