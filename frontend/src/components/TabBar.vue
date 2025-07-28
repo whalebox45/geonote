@@ -9,9 +9,9 @@
     <button @click="go('/note/new')" :class="{ active: isStartingWith('/note/') }">
       <i class="fas fa-pen"></i>
     </button>
-    <button @click="go('/chat')" :class="{ active: isActive('/chat') }">
+    <!-- <button @click="go('/chat')" :class="{ active: isActive('/chat') }">
       <i class="fas fa-comments"></i>
-    </button>
+    </button> -->
     <button @click="go('/settings')" :class="{ active: isActive('/settings') }">
       <i class="fas fa-cog"></i>
     </button>
