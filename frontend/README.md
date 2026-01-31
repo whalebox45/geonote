@@ -15,7 +15,6 @@ GeoNote 是一款以「記憶地圖」為核心的個人筆記系統。使用者
 
 - Vite + Vue 3 + TypeScript
 - vue-router（路由）
-- Pinia（狀態管理，若你已採用）
 - Sass / SCSS（樣式）
 - Font Awesome（icon）
 - vue3-openlayers（地圖）
