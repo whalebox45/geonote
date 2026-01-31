@@ -40,7 +40,6 @@ src/
 ├── router/               # vue-router 設定
 ├── views/                # 各頁面元件
 ├── styles/               # 全域樣式
-├── stores/               # Pinia 狀態（如有）
 ├── services/             # API 呼叫模組
 ├── App.vue
 └── main.ts
