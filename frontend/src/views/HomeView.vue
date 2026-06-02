@@ -44,6 +44,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
+import axios from 'axios';
 import TabBar from '../components/TabBar.vue';
 import MapView from '../components/MapView.vue';
 import { formatTimeAgo } from '../utils/datetimeConvert';
@@ -80,20 +81,10 @@ const recentMemories = ref<Memory[]>([]);
 async function getRecent10Memories() {
   const API_URL = import.meta.env.VITE_API_URL;
   try {
-    const res = await fetch(`${API_URL}/memories/me`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
+    const res = await axios.get(`${API_URL}/memories/me`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     });
-
-    if (!res.ok) {
-      throw new Error('Failed to fetch recent memories');
-    }
-
-    const result = await res.json();
-    recentMemories.value = result.memories ?? result; // 根據後端實際格式調整
+    recentMemories.value = res.data.memories;
   } catch (error) {
     console.error('Error fetching recent memories:', error);
   }

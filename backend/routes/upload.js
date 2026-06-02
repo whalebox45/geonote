@@ -3,6 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const router = express.Router();
+const TokenAuth = require('../middleware/auth');
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
@@ -34,7 +35,7 @@ const upload = multer({
   fileFilter,
 });
 
-router.post('/', upload.single('image'), (req, res) => {
+router.post('/', TokenAuth, upload.single('image'), (req, res) => {
   res.json({
     imageUrl: `/uploads/${req.file.filename}`,
     fullUrl: `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`

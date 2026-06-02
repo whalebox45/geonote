@@ -5,6 +5,33 @@ const TokenAuth = require('../middleware/auth');
 
 const PAGE_LIMIT = 10;
 
+const VALID_MOODS = ['', 'joy', 'sad', 'mad', 'shook'];
+
+function validateMemoryFields({ location, intensity, occurredAt, mood } = {}) {
+  if (location !== undefined && location !== null) {
+    if (
+      typeof location !== 'object' ||
+      typeof location.lat !== 'number' ||
+      typeof location.lng !== 'number'
+    ) {
+      return 'Invalid location format. Expected { lat: number, lng: number }';
+    }
+  }
+  if (intensity !== undefined && intensity !== '' && intensity !== 0) {
+    const n = Number(intensity);
+    if (!Number.isInteger(n) || n < 1 || n > 3) {
+      return 'Intensity must be 1, 2, or 3';
+    }
+  }
+  if (occurredAt !== undefined && isNaN(Date.parse(occurredAt))) {
+    return 'Invalid occurredAt: must be a valid ISO date';
+  }
+  if (mood !== undefined && !VALID_MOODS.includes(mood)) {
+    return `Invalid mood. Allowed values: ${VALID_MOODS.filter(Boolean).join(', ')}`;
+  }
+  return null;
+}
+
 // GET memories by token's corresponding userUuid
 router.get('/me', TokenAuth, async (req, res) => {
 
@@ -44,6 +71,10 @@ router.post('/', TokenAuth, async (req, res) => {
   if (!title || !description || !occurredAt) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
+
+  const validationError = validateMemoryFields({ location, intensity, occurredAt, mood });
+  if (validationError) return res.status(400).json({ error: validationError });
+
   try {
 
     const memory = new Memory({
@@ -82,7 +113,17 @@ router.put('/:uuid', TokenAuth, async (req, res) => {
     return res.status(401).json({ error: 'Unauthorized: cannot edit others\' memory' });
   }
 
-  Object.assign(memory, req.body);
+  const { title, description, mood, intensity, occurredAt, imageUrl, location, locationName } = req.body;
+  const validationError = validateMemoryFields({ location, intensity, occurredAt, mood });
+  if (validationError) return res.status(400).json({ error: validationError });
+  if (title !== undefined) memory.title = title;
+  if (description !== undefined) memory.description = description;
+  if (mood !== undefined) memory.mood = mood;
+  if (intensity !== undefined) memory.intensity = intensity;
+  if (occurredAt !== undefined) memory.occurredAt = occurredAt;
+  if (imageUrl !== undefined) memory.imageUrl = imageUrl;
+  if (location !== undefined) memory.location = location;
+  if (locationName !== undefined) memory.locationName = locationName;
   await memory.save();
   res.json(memory);
 });

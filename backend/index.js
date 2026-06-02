@@ -20,7 +20,24 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
 
 
 const path = require('path');
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+const jwt = require('jsonwebtoken');
+
+app.get('/uploads/:filename', (req, res) => {
+  const token =
+    (req.headers.authorization || '').replace(/^Bearer\s+/i, '') ||
+    req.query.token ||
+    '';
+  try {
+    jwt.verify(token, process.env.JWT_SECRET);
+  } catch {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  const filename = path.basename(req.params.filename); // prevent path traversal
+  const filePath = path.join(__dirname, 'uploads', filename);
+  if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Not found' });
+  res.sendFile(filePath);
+});
+
 app.use('/api/upload', require('./routes/upload'));
 
 app.use('/api/memories', require('./routes/memories'));
@@ -37,4 +54,11 @@ app.get('/', (req, res) => {
   res.send('Server is running and healthy!');
 });
 
-module.exports = app; 
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  console.error(err);
+  const status = err.status ?? err.statusCode ?? 500;
+  res.status(status).json({ error: err.message || 'Internal server error' });
+});
+
+module.exports = app;

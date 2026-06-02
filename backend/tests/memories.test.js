@@ -35,9 +35,10 @@ describe("Memories API", () => {
       .set("Authorization", `Bearer ${token}`)
       .send({
         title: "Test Memory",
-        content: "This is a test note.",
-        lat: 25.03,
-        lng: 121.56
+        description: "This is a test note.",
+        occurredAt: new Date().toISOString(),
+        location: { lat: 25.03, lng: 121.56 },
+        locationName: "Taipei"
       });
     expect(res.statusCode).toBe(201);
     expect(res.body).toHaveProperty("uuid");
@@ -46,10 +47,11 @@ describe("Memories API", () => {
 
   test("Get paginated memories", async () => {
     const res = await request(server)
-      .get("/api/memories/me?page=1")
+      .get("/api/memories/me?page=0")
       .set("Authorization", `Bearer ${token}`);
     expect(res.statusCode).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
+    expect(Array.isArray(res.body.memories)).toBe(true);
+    expect(res.body).toHaveProperty("totalCount");
   });
 
   test("Get memory by UUID", async () => {

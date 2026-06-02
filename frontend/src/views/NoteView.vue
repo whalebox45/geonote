@@ -125,7 +125,7 @@
           <label>{{ t("NoteView.image") }}</label>
           <input type="file" @change="handleFileUpload" accept="image/*" />
           <div v-if="imageUrl" class="preview">
-            <img :src="imageUrl" alt="Preview" style="max-width: 100%;" />
+            <img :src="imageUrlWithToken" alt="Preview" style="max-width: 100%;" />
           </div>
         </div>
       </template>
@@ -134,7 +134,7 @@
       <template v-if="isReadOnly && imageUrl">
         <div class="row">
           <label>{{ t("NoteView.image") }}</label>
-          <img :src="imageUrl" alt="Note Image" class="readonly-image" style="max-width: 100%; " />
+          <img :src="imageUrlWithToken" alt="Note Image" class="readonly-image" style="max-width: 100%;" />
         </div>
       </template>
 
@@ -193,7 +193,7 @@
 
 
 <script setup lang="ts">
-import { onMounted, watch, ref } from 'vue';
+import { onMounted, watch, ref, computed } from 'vue';
 import TabBar from '../components/TabBar.vue';
 import NoteMapView from '../components/NoteMapView.vue';
 
@@ -293,13 +293,8 @@ async function useCurrentLocation() {
       mapLng.value = lng;
 
       try {
-        // const params = new URLSearchParams({
-        //   format: 'json',
-        //   lat: lat.toString(),
-        //   lon: lng.toString()
-        // });
-        const response = await fetch(`${API_URL}/proxy/reverse?lat=${lat}&lon=${lng}`);
-        const data = await response.json();
+        const response = await axios.get(`${API_URL}/proxy/reverse`, { params: { lat, lon: lng } });
+        const data = response.data;
         locationQuery.value = data.display_name || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
       } catch (err) {
         console.error("Reverse geocoding failed", err);
@@ -321,14 +316,8 @@ async function handleMapClick({ lat, lng }: { lat: number; lng: number }) {
   mapLng.value = lng;
 
   try {
-
-    const params = new URLSearchParams({
-      format: 'json',
-      lat: lat.toString(),
-      lon: lng.toString()
-    });
-    const response = await fetch(`${API_URL}/proxy/reverse?${params}`);
-    const data = await response.json();
+    const response = await axios.get(`${API_URL}/proxy/reverse`, { params: { lat, lon: lng } });
+    const data = response.data;
     locationQuery.value = data.display_name || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
   } catch (error) {
     console.warn('reverse search failed, search coords', error);
@@ -354,8 +343,8 @@ async function searchLocation() {
   }
 
   try {
-    const response = await fetch(`${API_URL}/proxy/search?q=${encodeURIComponent(locationQuery.value)}`);
-    const data = await response.json();
+    const response = await axios.get(`${API_URL}/proxy/search`, { params: { q: locationQuery.value } });
+    const data = response.data;
 
     console.debug(data)
 
@@ -460,21 +449,8 @@ const saveNote = async () => {
   const method = isEditing.value ? 'PUT' : 'POST'
 
   try {
-    const res = await fetch(url, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(note)
-    })
+    await axios({ method, url, data: note, headers: { Authorization: `Bearer ${token}` } })
 
-    if (!res.ok) {
-      const errorData = await res.json()
-      throw new Error(errorData.error || 'Failed to save')
-    }
-
-    // const result = await res.json()
     dialogMessage.value = isEditing.value ? t("NoteView.note_update_success") : t("NoteView.note_create_success")
     showDialog.value = true
 
@@ -556,14 +532,9 @@ async function deleteMemory() {
   const token = localStorage.getItem('token')
 
   try {
-    const res = await fetch(`${API_URL}/memories/${uuid}`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+    await axios.delete(`${API_URL}/memories/${uuid}`, {
+      headers: { Authorization: `Bearer ${token}` }
     })
-
-    if (!res.ok) throw new Error('Failed to delete')
 
     dialogMessage.value = t("NoteView.note_delete_success")
     showDialog.value = true
@@ -578,6 +549,12 @@ async function deleteMemory() {
 }
 
 const imageUrl = ref<string | null>(null);
+
+const imageUrlWithToken = computed<string | undefined>(() => {
+  if (!imageUrl.value) return undefined;
+  const token = localStorage.getItem('token');
+  return token ? `${imageUrl.value}?token=${encodeURIComponent(token)}` : imageUrl.value;
+});
 
 const handleFileUpload = async (event: Event) => {
   const target = event.target as HTMLInputElement;
