@@ -5,8 +5,9 @@
 - [x] 閱讀頁顯示 + 時區處理（`a4e5c9d`）：Mood emoji、Intensity 文字、日期用 `Intl.DateTimeFormat`；讀取時 UTC → 當地時間，儲存時送 `toISOString()`
 
 - [ ] **舊資料的 `occurredAt` 差了 8 小時**
-  - 原因：舊前端送出沒有時區的字串（例：`"2026-05-29T10:27"`），後端在 UTC 時區下執行，直接當成 UTC 存成 `10:27Z`；實際應該是台灣時間 10:27 = `02:27Z`
-  - 現象：套用上面的修改後，舊筆記會顯示成晚 8 小時（例：淡江大橋 10:27 → 6:27 PM）
+  - 原因：舊前端送出沒有時區的字串（例：`"2026-05-29T10:27"`），後端用伺服器自己的時區解讀；讀回時又把 UTC 字串直接切給輸入框，每次「編輯 → 儲存」都可能再偏 8 小時
+  - 現象：舊筆記的時間可能差 8 小時的倍數（例：淡江大橋原本 10:27，現在顯示 6:27 PM）
+  - 先確認後端時區：`podman exec geonote_backend node -e "console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)"`（沒用容器就在 backend 資料夾直接跑 `node -e ...`）
   - 處理方式（二選一）：
     - 寫一次性 migration：對修正前建立／編輯過的 memories，`occurredAt` 減 8 小時
     - 筆記不多的話，直接在編輯頁手動改回正確時間再存
