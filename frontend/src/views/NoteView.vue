@@ -269,6 +269,7 @@ function resetForm() {
   disableMood.value = false
   mapLat.value = 25.0339
   mapLng.value = 121.5645
+  imageUrl.value = null
 }
 
 function goToEditPage() {
@@ -565,13 +566,16 @@ const handleFileUpload = async (event: Event) => {
 
   try {
     const response = await axios.post(`${API_URL}/upload`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
     });
     imageUrl.value = `${IMAGE_BASE_URL}${response.data.imageUrl}`;
   } catch (error) {
     console.error("Image upload failed:", error);
     showDialog.value = true;
-    dialogMessage.value = t("NoteView.image_upload_fail");
+    dialogMessage.value = t("NoteView.image_upload_error");
   } 
 };
 
