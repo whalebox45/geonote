@@ -24,7 +24,7 @@
               {{ memory.title }}
             </a>
             <br />
-            <span class="time">{{ formatTimeAgo(memory.occurredAt) }}</span>
+            <span class="time">{{ formatTimeAgo(memory.occurredAt, locale) }}</span>
           </div>
         </template>
         <div v-else class="memory-placeholder">
@@ -51,7 +51,7 @@ import { formatTimeAgo } from '../utils/datetimeConvert';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 const router = useRouter();
 const route = useRoute();
