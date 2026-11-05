@@ -22,7 +22,7 @@
         <div class="field mood">
           <label>{{ t("NoteView.mood") }}</label>
           <template v-if="isReadOnly">
-            <div class="readonly-field">{{ mood || '-' }}</div>
+            <div class="readonly-field">{{ moodLabel }}</div>
           </template>
           <template v-else>
             <select class="input" v-model="mood" :disabled="disableMood"
@@ -40,7 +40,7 @@
         <div class="field intensity">
           <label>{{ t("NoteView.intensity") }}</label>
           <template v-if="isReadOnly">
-            <div class="readonly-field">{{ intensity || '-' }}</div>
+            <div class="readonly-field">{{ intensityLabel }}</div>
           </template>
           <template v-else>
             <select class="input" v-model="intensity" :disabled="disableMood"
@@ -66,7 +66,7 @@
       <div class="row">
         <label>{{ t("NoteView.datetime") }}</label>
         <template v-if="isReadOnly">
-          <div class="readonly-field">{{ occurredAt }}</div>
+          <div class="readonly-field">{{ occurredAtLabel }}</div>
         </template>
         <template v-else>
           <input type="datetime-local" class="input" v-model="occurredAt"
@@ -203,7 +203,7 @@ import { useRouter,useRoute } from 'vue-router';
 import axios from 'axios';
 
 import { useI18n } from 'vue-i18n'
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const router = useRouter();
 const route = useRoute();
@@ -221,7 +221,29 @@ const confirmingDelete = ref(false)
 const title = ref('');
 const mood = ref('');
 const intensity = ref('');
-const occurredAt = ref('');
+const occurredAt = ref(''); // datetime-local 格式（使用者當地時間）："YYYY-MM-DDTHH:mm"
+
+// 唯讀模式的顯示文字
+const MOOD_EMOJI: Record<string, string> = { joy: '😊', sad: '😢', mad: '😡', shook: '😱' };
+const moodLabel = computed(() => MOOD_EMOJI[mood.value] ?? (mood.value || '-'));
+const intensityLabel = computed(() => {
+  const keys: Record<string, string> = { '1': 'NoteView.low', '2': 'NoteView.medium', '3': 'NoteView.high' };
+  return keys[intensity.value] ? t(keys[intensity.value]) : '-';
+});
+const occurredAtLabel = computed(() => {
+  if (!occurredAt.value) return '-';
+  const d = new Date(occurredAt.value); // 無時區的字串會被當成當地時間解析
+  if (isNaN(d.getTime())) return occurredAt.value;
+  return new Intl.DateTimeFormat(locale.value, { dateStyle: 'medium', timeStyle: 'short' }).format(d);
+});
+
+// 後端存的是 UTC ISO 字串；轉成 datetime-local 需要的當地時間格式
+function isoToLocalInput(iso?: string): string {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '';
+  return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+}
 const description = ref('');
 const locationQuery = ref('');
 const disableCoords = ref(false); // ✅ 預設不儲存座標
@@ -435,7 +457,8 @@ const saveNote = async () => {
     title: title.value,
     mood: !(disableMood.value) ? mood.value : '',
     intensity: !(disableMood.value) ? Number(intensity.value) : 0,
-    occurredAt: occurredAt.value,
+    // 明確送出 UTC，避免後端用自己的時區去解讀沒有時區的字串
+    occurredAt: new Date(occurredAt.value).toISOString(),
     locationName: !(disableCoords.value) ? locationQuery.value : '',
     location: !(disableCoords.value)
       ? { lat: mapLat.value, lng: mapLng.value }
@@ -486,7 +509,7 @@ async function fetchMemory(uuid: string) {
     title.value = data.title
     mood.value = data.mood || ''
     intensity.value = data.intensity?.toString() || ''
-    occurredAt.value = data.occurredAt?.slice(0, 16) || ''
+    occurredAt.value = isoToLocalInput(data.occurredAt)
     description.value = data.description
     locationQuery.value = data.locationName || ''
     mapLat.value = data.location?.lat || 25.0339
